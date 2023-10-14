@@ -4,7 +4,9 @@ export default function TopNavBar() {
   return (
     <div className="flex-container nav-bar">
       <img src="/favicon.png" alt="Pokemon Logo" />
-      <span className="title">POKEMON LOOKUP</span>
+      <a href="#">
+        <span className="title">POKEMON LOOKUP</span>
+      </a>
     </div>
   );
 }

@@ -16,7 +16,7 @@
 }
 
 .nav-bar {
-  background-color: #1a2fce;
+  background-color: #1021a1;
 }
 
 .nav-bar img {
@@ -26,4 +26,10 @@
 
 .nav-bar .title {
   margin-left: 10px;
+}
+
+.nav-bar a {
+  text-decoration: none; /* no underline */
+  -webkit-text-fill-color: #ffcb05;
+  -webkit-text-stroke: 2px #3c5aa6;
 }
