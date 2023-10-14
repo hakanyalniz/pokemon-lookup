@@ -2,3 +2,14 @@
   margin: 0 auto;
 }
 
+/* Center the main body of the page */
+.main-body {
+  max-width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.main-body .pokemon-logo {
+  height: 500px;
+}
+
