@@ -1,0 +1,29 @@
+@font-face {
+  font-family: pokemonFont;
+  src: url(PokemonSolid.ttf);
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-family: pokemonFont;
+  font-size: 30px;
+  letter-spacing: 3px;
+  -webkit-text-fill-color: #ffcb05;
+  -webkit-text-stroke: 2px #3c5aa6;
+}
+
+.nav-bar {
+  background-color: #141e6b;
+}
+
+.nav-bar img {
+  height: 80px;
+  margin: 10px 0;
+}
+
+.nav-bar .title {
+  margin-left: 10px;
+}
