@@ -1,7 +1,7 @@
 import "./MainPage.css";
-import "../components/TopNavBar/TopNavBar.jsx";
 import TopNavBar from "../components/TopNavBar/TopNavBar.jsx";
 import SearchBar from "../components/SearchBar/SearchBar.jsx";
+import MainList from "../components/MainList/MainList";
 
 function MainPage() {
   return (
@@ -13,7 +13,10 @@ function MainPage() {
           alt="Pokemon Logo"
           className="pokemon-logo"
         />
-        <SearchBar />
+        <div className="search-and-list">
+          <SearchBar />
+          <MainList />
+        </div>
       </div>
     </>
   );

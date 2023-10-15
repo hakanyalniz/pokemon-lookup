@@ -1,3 +1,9 @@
+import "./MainList.css";
+
+export default function MainList() {
+  return <div className="pokemon-list-container"></div>;
+}
+
 // Use dynamic routing
 // In this approach, you create a single template for the Pokémon detail page.
 // The specific data for each Pokémon is then loaded dynamically based on the URL parameter.
