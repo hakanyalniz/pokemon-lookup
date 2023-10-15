@@ -9,7 +9,7 @@ function MainPage() {
       <TopNavBar />
       <div className="main-body">
         <img
-          src="./PokemonLogo.png"
+          src="./logo/PokemonLogo.png"
           alt="Pokemon Logo"
           className="pokemon-logo"
         />
