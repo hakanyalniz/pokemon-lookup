@@ -1,4 +1,5 @@
 import "./MainList.css";
+import UsePagination from "../usePagination/UsePagination";
 import { useEffect, useState } from "react";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
@@ -13,33 +14,23 @@ function capitalizeFirstLetter(word) {
 export default function MainList() {
   const [pokemon, setPokemon] = useState([]);
 
+  const fetchPokemon = async () => {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000`);
+    const data = await res.json();
+    setPokemon(data.results);
+  };
+
   useEffect(() => {
-    fetch(`https://pokeapi.co/api/v2/pokemon?limit=20`)
-      .then((response) => response.json())
-      .then((data) => setPokemon(data.results));
+    fetchPokemon();
   }, []);
+
+  console.log(pokemon);
   //   First pokemon is checked to ensure that the data does not give error of null
   return pokemon ? (
-    <table className="pokemon-list-container">
-      <tbody>
-        {pokemon.map((p) => (
-          <tr key={p.name}>
-            <td className="pokemon-cell">
-              {/* The 6 below is because when split there will be an array, the 7th item in that array is the id */}
-              <img
-                src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-                  p.url.split("/")[6]
-                }.png`}
-                alt={p.name}
-              />
-              <span className="pokemon-name">
-                {capitalizeFirstLetter(p.name)}
-              </span>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <UsePagination
+      pokemon={pokemon}
+      capitalizeFirstLetter={capitalizeFirstLetter}
+    />
   ) : (
     <div>Loading...</div>
   );
