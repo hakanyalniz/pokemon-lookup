@@ -24,7 +24,7 @@ export default function MainList() {
     fetchPokemon();
   }, []);
 
-  console.log(pokemon);
+  // console.log(pokemon);
   //   First pokemon is checked to ensure that the data does not give error of null
   return pokemon ? (
     <UsePagination
