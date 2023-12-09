@@ -3,6 +3,7 @@ import { useState } from "react";
 
 export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
   const [page, setPage] = useState(1);
+
   // The limit to show how much item per pagination
   const pageListLimit = 10;
 
@@ -27,31 +28,41 @@ export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
     let DOTS = "...";
 
     // Populates the pageNumberArray with numbers, from 1 to totalNumberOfPages
-    for (let x = 1; x <= totalNumberOfPages; x++) {
+    for (let x = 0; x <= totalNumberOfPages; x++) {
       pageNumberArray.push(x);
     }
 
     const lastIndex = pageNumberArray.length;
 
-    console.log(lastIndex);
-    console.log(totalNumberOfPages);
-
-    if (page == 1) {
+    if (page === 1 || page === 2) {
       finalPageNumberArray = [
-        ...pageNumberArray.slice(0, 5),
+        ...pageNumberArray.slice(1, 5),
         DOTS,
         pageNumberArray[lastIndex - 1],
       ];
-    } else if (page == lastIndex) {
+    } else if (page === lastIndex || page === lastIndex - 1) {
       finalPageNumberArray = [
-        pageNumberArray[0],
+        pageNumberArray[1],
         DOTS,
         ...pageNumberArray.slice(-5),
+      ];
+    } else if (page > 2 && page <= lastIndex - 1) {
+      finalPageNumberArray = [
+        pageNumberArray[1],
+        DOTS,
+        ...[
+          pageNumberArray[page - 2],
+          pageNumberArray[page - 1],
+          pageNumberArray[page],
+          pageNumberArray[page + 1],
+          pageNumberArray[page + 2],
+        ],
+        DOTS,
+        pageNumberArray[lastIndex - 1],
       ];
     } else {
       finalPageNumberArray = pageNumberArray;
     }
-
     return (
       <>
         {finalPageNumberArray.map((i) => (
