@@ -34,45 +34,41 @@ export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
 
     const lastIndex = pageNumberArray.length;
 
-    if (page === 1 || page === 2) {
+    if (page < 4) {
       finalPageNumberArray = [
         ...pageNumberArray.slice(1, 5),
         DOTS,
         pageNumberArray[lastIndex - 1],
       ];
-    } else if (page === lastIndex || page === lastIndex - 1) {
+    } else if (page > lastIndex - 4) {
       finalPageNumberArray = [
         pageNumberArray[1],
         DOTS,
         ...pageNumberArray.slice(-5),
       ];
-    } else if (page > 2 && page <= lastIndex - 1) {
+    } else if (page >= 4 && page <= lastIndex - 4) {
       finalPageNumberArray = [
         pageNumberArray[1],
         DOTS,
-        ...[
-          pageNumberArray[page - 2],
-          pageNumberArray[page - 1],
-          pageNumberArray[page],
-          pageNumberArray[page + 1],
-          pageNumberArray[page + 2],
-        ],
+        ...pageNumberArray.slice(page - 2, page + 3),
         DOTS,
         pageNumberArray[lastIndex - 1],
       ];
     } else {
       finalPageNumberArray = pageNumberArray;
     }
+
     return (
       <>
-        {finalPageNumberArray.map((i) => (
+        {finalPageNumberArray.map((i, index) => (
           <span
             className={`page__number ${
               page === i ? "selected__page__number" : ""
             }`}
-            key={i}
+            key={i === "..." ? `ellipsis-${index}` : `page-${i}`}
             onClick={() => handlePageChange(i)}
           >
+            {/* {console.log(i)} */}
             {i}
           </span>
         ))}
