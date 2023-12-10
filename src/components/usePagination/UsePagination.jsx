@@ -1,12 +1,12 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import "./UsePagination.css";
 
-export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
-  const [page, setPage] = useState(1);
-
-  // The limit to show how much item per pagination
-  const pageListLimit = 10;
-
+export default function UsePagination({
+  pokemon,
+  page,
+  setPage,
+  pageListLimit,
+}) {
   // event handler for page change on click
   const handlePageChange = (pageNumber) => {
     if (
@@ -50,7 +50,7 @@ export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
       finalPageNumberArray = [
         pageNumberArray[1],
         DOTS,
-        ...pageNumberArray.slice(page - 2, page + 3),
+        ...pageNumberArray.slice(page - 1, page + 2),
         DOTS,
         pageNumberArray[lastIndex - 1],
       ];
@@ -62,9 +62,9 @@ export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
       <>
         {finalPageNumberArray.map((i, index) => (
           <span
-            className={`page__number ${
+            className={`${i != "..." ? "page__number" : ""} ${
               page === i ? "selected__page__number" : ""
-            }`}
+            } ${i === "..." ? "dots" : ""}`}
             key={i === "..." ? `ellipsis-${index}` : `page-${i}`}
             onClick={() => handlePageChange(i)}
           >
@@ -77,42 +77,14 @@ export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
   };
 
   return (
-    <div>
-      {pokemon.length && (
-        <table className="pokemon-list-container">
-          <tbody>
-            {/* Let us say page is 1, and pageListLimit is 10, then the below will be
-            .slice(0, 10) 
-            which will get us the first 10 pokemon, and since each page has 10 pokemon, it will fill the page as we map over it*/}
-            {pokemon
-              .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-              .map((pokemon) => (
-                <tr key={pokemon.name}>
-                  <td className="pokemon-cell">
-                    {/* The 6 below is because when split there will be an array, the 7th item in that array is the id */}
-                    <img
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-                        pokemon.url.split("/")[6]
-                      }.png`}
-                      alt={pokemon.name}
-                    />
-                    <span className="pokemon-name">
-                      {capitalizeFirstLetter(pokemon.name)}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-      )}
-
-      {pokemon.length > 0 && (
-        <section className="pagination">
+    <>
+      {
+        <section className="pagination-container">
           <span
             onClick={() => handlePageChange(page - 1)}
             className={`arrow ${page === 1 ? "pagination__disabled" : ""}`}
           >
-            ⬅
+            {"<"}
           </span>
           {handlePageNumbers()}
           <span
@@ -123,26 +95,10 @@ export default function UsePagination({ pokemon, capitalizeFirstLetter }) {
                 : ""
             }`}
           >
-            ➡
+            {">"}
           </span>
         </section>
-      )}
-    </div>
+      }
+    </>
   );
-}
-
-{
-  /* {[...Array(Math.floor(pokemon.length / pageListLimit))].map(
-            (_, i) => (
-              <span
-                className={`page__number ${
-                  page === i + 1 ? "selected__page__number" : ""
-                }`}
-                key={i + 1}
-                onClick={() => handlePageChange(i + 1)}
-              >
-                {i + 1}
-              </span>
-            )
-          )} */
 }

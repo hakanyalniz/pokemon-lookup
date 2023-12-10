@@ -13,6 +13,10 @@ function capitalizeFirstLetter(word) {
 
 export default function MainList() {
   const [pokemon, setPokemon] = useState([]);
+  const [page, setPage] = useState(1);
+
+  // The limit to show how much item per pagination
+  const pageListLimit = 10;
 
   const fetchPokemon = async () => {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000`);
@@ -24,24 +28,47 @@ export default function MainList() {
     fetchPokemon();
   }, []);
 
-  // console.log(pokemon);
   //   First pokemon is checked to ensure that the data does not give error of null
   return pokemon ? (
-    <UsePagination
-      pokemon={pokemon}
-      capitalizeFirstLetter={capitalizeFirstLetter}
-    />
+    <div>
+      {pokemon.length && (
+        <table className="pokemon-list-container">
+          <tbody>
+            {/* Let us say page is 1, and pageListLimit is 10, then the below will be
+          .slice(0, 10) 
+          which will get us the first 10 pokemon, and since each page has 10 pokemon, it will fill the page as we map over it*/}
+            {pokemon
+              .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+              .map((pokemon) => (
+                <tr key={pokemon.name}>
+                  <td className="pokemon-cell">
+                    {/* The 6 below is because when split there will be an array, the 7th item in that array is the id */}
+                    <img
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+                        pokemon.url.split("/")[6]
+                      }.png`}
+                      alt={pokemon.name}
+                    />
+                    <span className="pokemon-name">
+                      {capitalizeFirstLetter(pokemon.name)}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      )}
+      <UsePagination
+        pokemon={pokemon}
+        page={page}
+        setPage={setPage}
+        pageListLimit={pageListLimit}
+      />
+    </div>
   ) : (
     <div>Loading...</div>
   );
 }
-//   return pokemon ? (
-//     <div className="pokemon-list-container">
-//       {<img src={pokemon.sprites.front_default} alt="Pokemon Sprite" />}
-//     </div>
-//   ) : (
-//     <div>Loading...</div>
-//   );
 
 // Use dynamic routing
 // In this approach, you create a single template for the Pokémon detail page.

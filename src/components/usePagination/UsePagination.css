@@ -1,0 +1,32 @@
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+
+  font-size: 1.2rem;
+}
+
+.pagination-container > * {
+  padding: 0 5px;
+  margin: 0 2px;
+  user-select: none;
+}
+
+.page__number,
+.arrow {
+  border-radius: 10px;
+}
+
+.page__number:hover,
+.arrow:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+}
+
+.dots:hover {
+  cursor: default;
+}
+
+.selected__page__number {
+  background-color: rgba(255, 255, 255, 0.2);
+}
