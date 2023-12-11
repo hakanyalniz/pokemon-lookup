@@ -1,6 +1,6 @@
 import "./MainList.css";
 import UsePagination from "../usePagination/UsePagination";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
 function capitalizeFirstLetter(word) {
@@ -11,22 +11,11 @@ function capitalizeFirstLetter(word) {
   return firstLetterCap + remainingLetters;
 }
 
-export default function MainList() {
-  const [pokemon, setPokemon] = useState([]);
+export default function MainList({pokemon}) {
   const [page, setPage] = useState(1);
 
   // The limit to show how much item per pagination
   const pageListLimit = 10;
-
-  const fetchPokemon = async () => {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000`);
-    const data = await res.json();
-    setPokemon(data.results);
-  };
-
-  useEffect(() => {
-    fetchPokemon();
-  }, []);
 
   //   First pokemon is checked to ensure that the data does not give error of null
   return pokemon ? (
