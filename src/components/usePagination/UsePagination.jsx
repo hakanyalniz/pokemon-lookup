@@ -41,7 +41,7 @@ export default function UsePagination({
 
     // When the total pokemon length gets too low due to search bar, the below if will
     // take that into account instead
-    if (pokemon.length <= 30) {
+    if (pokemon.length <= 40) {
       finalPageNumberArray = [...pageNumberArray.slice(1, 5)];
     } else if (page < 4) {
       finalPageNumberArray = [
