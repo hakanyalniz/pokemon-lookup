@@ -4,14 +4,18 @@
   padding: 10px 10px;
   text-align: left;
 
+  border-collapse: separate;
+  border-spacing: 0 5px;
+
   background-color: #0c0032;
 }
 
 .pokemon-list-container .pokemon-cell {
-  display: flex;
-  align-items: center;
   background-color: #240099;
-  margin: 5px 0;
+}
+
+.pokemon-list-container .pokemon-image {
+  width: 100px;
 }
 
 .pokemon-list-container ul {

@@ -23,6 +23,20 @@ export default function MainList({ pokemon }) {
     <div>
       {pokemon.length && (
         <table className="pokemon-list-container">
+          <thead>
+            <tr>
+              <th>Pokemon</th>
+              <th>Name</th>
+              <th>Type</th>
+              <th>HP</th>
+              <th>Atk</th>
+              <th>Def</th>
+              <th>SAt</th>
+              <th>SDf</th>
+              <th>Spd</th>
+              <th>Total</th>
+            </tr>
+          </thead>
           <tbody>
             {/* Let us say page is 1, and pageListLimit is 10, then the below will be
           .slice(0, 10) 
@@ -30,8 +44,8 @@ export default function MainList({ pokemon }) {
             {pokemon
               .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
               .map((pokemon) => (
-                <tr key={pokemon.name}>
-                  <td className="pokemon-cell">
+                <tr key={pokemon.name} className="pokemon-cell">
+                  <td className="pokemon-image">
                     {/* The 6 below is because when split there will be an array, the 7th item in that array is the id */}
                     <img
                       src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
@@ -39,6 +53,8 @@ export default function MainList({ pokemon }) {
                       }.png`}
                       alt={pokemon.name}
                     />
+                  </td>
+                  <td>
                     <span className="pokemon-name">
                       {capitalizeFirstLetter(pokemon.name)}
                     </span>
