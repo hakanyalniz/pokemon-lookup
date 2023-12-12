@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import "./MainList.css";
 import UsePagination from "../usePagination/UsePagination";
-import {useState } from "react";
+import { useState } from "react";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
 function capitalizeFirstLetter(word) {
@@ -11,7 +12,7 @@ function capitalizeFirstLetter(word) {
   return firstLetterCap + remainingLetters;
 }
 
-export default function MainList({pokemon}) {
+export default function MainList({ pokemon }) {
   const [page, setPage] = useState(1);
 
   // The limit to show how much item per pagination

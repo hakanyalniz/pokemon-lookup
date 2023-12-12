@@ -8,7 +8,12 @@ export default function UsePagination({
   pageListLimit,
 }) {
   // event handler for page change on click
-  const handlePageChange = (pageNumber) => {
+  const handlePageChange = (event, pageNumber) => {
+    // Prevents the button clicks from taking the user to the top of the page
+    // Adding stopPropagation helped, now instead of 1 in 10 it happens about 1 in 50 or so.
+    event.preventDefault();
+    event.stopPropagation();
+
     if (
       pageNumber > 0 &&
       pageNumber <= pokemon.length / pageListLimit &&
@@ -34,7 +39,11 @@ export default function UsePagination({
 
     const lastIndex = pageNumberArray.length;
 
-    if (page < 4) {
+    // When the total pokemon length gets too low due to search bar, the below if will
+    // take that into account instead
+    if (pokemon.length <= 30) {
+      finalPageNumberArray = [...pageNumberArray.slice(1, 5)];
+    } else if (page < 4) {
       finalPageNumberArray = [
         ...pageNumberArray.slice(1, 5),
         DOTS,
@@ -66,9 +75,8 @@ export default function UsePagination({
               page === i ? "selected__page__number" : ""
             } ${i === "..." ? "dots" : ""}`}
             key={i === "..." ? `ellipsis-${index}` : `page-${i}`}
-            onClick={() => handlePageChange(i)}
+            onClick={(e) => handlePageChange(e, i)}
           >
-            {/* {console.log(i)} */}
             {i}
           </span>
         ))}
@@ -81,14 +89,14 @@ export default function UsePagination({
       {
         <section className="pagination-container">
           <span
-            onClick={() => handlePageChange(page - 1)}
+            onClick={(e) => handlePageChange(e, page - 1)}
             className={`arrow ${page === 1 ? "pagination__disabled" : ""}`}
           >
             {"<"}
           </span>
           {handlePageNumbers()}
           <span
-            onClick={() => handlePageChange(page + 1)}
+            onClick={(e) => handlePageChange(e, page + 1)}
             className={`arrow ${
               page === Math.floor(pokemon.length / pageListLimit)
                 ? "pagination__disabled"
