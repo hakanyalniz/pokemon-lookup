@@ -14,8 +14,14 @@
   background-color: #240099;
 }
 
+.pokemon-list-container .pokemon-image img,
 .pokemon-list-container .pokemon-image {
+  height: 100px;
   width: 100px;
+}
+
+.pokemon-list-container .pokemon-image img {
+  margin-right: 10px;
 }
 
 .pokemon-list-container ul {

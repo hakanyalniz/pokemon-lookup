@@ -44,19 +44,17 @@ export default function MainList({ pokemon }) {
             {pokemon
               .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
               .map((pokemon) => (
-                <tr key={pokemon.name} className="pokemon-cell">
+                <tr key={pokemon[0].name} className="pokemon-cell">
                   <td className="pokemon-image">
-                    {/* The 6 below is because when split there will be an array, the 7th item in that array is the id */}
+                    {/* Pokemon ID is located as second item, inside the object is the id, which we access here */}
                     <img
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
-                        pokemon.url.split("/")[6]
-                      }.png`}
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon[1].id}.png`}
                       alt={pokemon.name}
                     />
                   </td>
                   <td>
                     <span className="pokemon-name">
-                      {capitalizeFirstLetter(pokemon.name)}
+                      {capitalizeFirstLetter(pokemon[0].name)}
                     </span>
                   </td>
                 </tr>
