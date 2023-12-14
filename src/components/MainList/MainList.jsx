@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import "./MainList.css";
 import UsePagination from "../usePagination/UsePagination";
-import { useState } from "react";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
 function capitalizeFirstLetter(word) {
@@ -12,11 +11,8 @@ function capitalizeFirstLetter(word) {
   return firstLetterCap + remainingLetters;
 }
 
-export default function MainList({ pokemon }) {
-  const [page, setPage] = useState(1);
-
+export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
-  const pageListLimit = 10;
 
   //   First pokemon is checked to ensure that the data does not give error of null
   return pokemon ? (
@@ -44,29 +40,38 @@ export default function MainList({ pokemon }) {
             {pokemon
               .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
               .map((pokemon) => (
-                <tr key={pokemon[0].name} className="pokemon-cell">
+                <tr key={pokemon.name} className="pokemon-cell">
                   <td className="pokemon-image">
                     {/* Pokemon ID is located as second item, inside the object is the id, which we access here */}
                     <img
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon[1].id}.png`}
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
+                        pokemon.url.split("/")[6]
+                      }.png`}
                       alt={pokemon.name}
                     />
                   </td>
                   <td>
                     <span className="pokemon-name">
-                      {capitalizeFirstLetter(pokemon[0].name)}
+                      {capitalizeFirstLetter(pokemon.name)}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="pokemon-type">
+                      {console.log(pokemon)}
+                      {/* pokemon[2].types[0].type.name */}
                     </span>
                   </td>
                 </tr>
               ))}
+            {console.log("TEST")}
           </tbody>
         </table>
       )}
       <UsePagination
-        pokemon={pokemon}
         page={page}
         setPage={setPage}
         pageListLimit={pageListLimit}
+        pokemon={pokemon}
       />
     </div>
   ) : (

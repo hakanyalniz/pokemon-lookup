@@ -6,20 +6,26 @@ import { useState, useEffect } from "react";
 
 function MainPage() {
   const [pokemon, setPokemon] = useState([]);
+  // const [basePokemonDetail, setBasePokemonDetail] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState(pokemon);
+  const [page, setPage] = useState(1);
+
+  const pageListLimit = 10;
 
   const fetchPokemon = async () => {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=10000`);
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
     const data = await res.json();
-
     const basePokemonDetail = data.results;
-    // setPokemon(data.results);
+    const perPaginationData = data.results.slice(
+      page * pageListLimit - pageListLimit,
+      page * pageListLimit
+    );
 
     // Promise.all allows for concurrent fetch requests
     // We get the url of the previous fetch request, get detailed data out of it
     // select the ones we want and create a new variable out of it named detailedPokemonList
     const temporaryDetailedPokemonList = await Promise.all(
-      data.results.map(async (pokemonData) => {
+      perPaginationData.map(async (pokemonData) => {
         const res = await fetch(pokemonData.url);
         const newData = await res.json();
         return newData;
@@ -40,12 +46,19 @@ function MainPage() {
       }
     );
 
-    setPokemon(detailedPokemonList);
+    const combinedData = basePokemonDetail.map((baseItem) => {
+      const matchingDetailedInfo = detailedPokemonList.find(
+        (detailedItem) => detailedItem[0].name === baseItem.name
+      );
+      return { ...baseItem, ...matchingDetailedInfo };
+    });
+
+    setPokemon(combinedData);
   };
 
   useEffect(() => {
     fetchPokemon();
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     // Update filteredPokemon when the pokemon prop changes, or else the pokemonlist will be empty
@@ -68,7 +81,12 @@ function MainPage() {
         <div className="search-and-list">
           <SearchBar pokemon={pokemon} onFilterChange={handleFilterChange} />
           {/* MainList gets the filteredPokemon */}
-          <MainList pokemon={filteredPokemon} />
+          <MainList
+            pokemon={filteredPokemon}
+            pageListLimit={pageListLimit}
+            page={page}
+            setPage={setPage}
+          />
         </div>
       </div>
     </>

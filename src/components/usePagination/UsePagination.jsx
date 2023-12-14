@@ -2,10 +2,10 @@
 import "./UsePagination.css";
 
 export default function UsePagination({
-  pokemon,
   page,
   setPage,
   pageListLimit,
+  pokemon,
 }) {
   // event handler for page change on click
   const handlePageChange = (event, pageNumber) => {
@@ -21,6 +21,10 @@ export default function UsePagination({
     )
       setPage(pageNumber);
   };
+
+  // This sands the current page number to MainPage, so that we can fetch detailed pokemon info
+  // based on the page number, and therefore only the pokemon that are seen on the page
+  // instead of all of them
 
   /* Creates a new array with a length of total page number */
   const handlePageNumbers = () => {
