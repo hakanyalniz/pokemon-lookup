@@ -63,10 +63,6 @@ function MainPage() {
     fetchPokemon();
   }, [page]);
 
-  // console.log(
-  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-  // );
-
   useEffect(() => {
     // Update filteredPokemon when the pokemon prop changes, or else the pokemonlist will be empty
     setFilteredPokemon(pokemon);

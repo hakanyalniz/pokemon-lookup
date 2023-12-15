@@ -13,10 +13,14 @@ function capitalizeFirstLetter(word) {
 
 export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
+  const emptyArray = [...Array(10)].map((_, i) => i + 1);
 
   //   First pokemon is checked to ensure that the data does not give error of null
   return (
     <div>
+      {/* The first requirement is neccesary because for the initial cycles of updates, the pokemon array is empty
+      therefore if I tried to use length on it, it would give error. The second one is there because the update for the neccessary detailed information only arrives after 3 or so cycles
+      therefore this check is required.  */}
       {pokemon.length > 0 ? (
         Object.keys(
           pokemon.slice(
@@ -25,14 +29,6 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
           )[0]
         ).length > 2 ? (
           <table className="pokemon-list-container">
-            {/* {console.log(
-            Object.keys(
-              pokemon.slice(
-                page * pageListLimit - pageListLimit,
-                page * pageListLimit
-              )[0]
-            ).length
-          )} */}
             <thead>
               <tr>
                 <th>Pokemon</th>
@@ -88,7 +84,42 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
             </tbody>
           </table>
         ) : (
-          <p>Loading...</p>
+          // The below height is neccesary, or else in the instant that the data has not yet been loaded, the table body will shrink and put the user
+          // at the top, so as to keep the user at the bottom of the page, the height must be the same as if it has data inside it
+          // change the height if the original table height increases or decreases
+          <table className="pokemon-list-container" height="1164px">
+            <thead>
+              <tr>
+                <th>Pokemon</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>HP</th>
+                <th>Atk</th>
+                <th>Def</th>
+                <th>SAt</th>
+                <th>SDf</th>
+                <th>Spd</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {emptyArray.map((_, i) => {
+                return (
+                  <tr key={i} className="pokemon-cell">
+                    <td className="pokemon-image">
+                      <span>Loading...</span>
+                    </td>
+                    <td>
+                      <span className="pokemon-name">Loading... </span>
+                    </td>
+                    <td>
+                      <span className="pokemon-type">Loading... </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         )
       ) : (
         <p>Loading...</p>
