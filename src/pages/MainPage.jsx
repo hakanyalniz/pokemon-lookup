@@ -6,9 +6,11 @@ import { useState, useEffect } from "react";
 
 function MainPage() {
   const [pokemon, setPokemon] = useState([]);
-  // const [basePokemonDetail, setBasePokemonDetail] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState(pokemon);
   const [page, setPage] = useState(1);
+
+  // const [basePokemonDetail, setBasePokemonDetail] = useState([]);
+  // const [detailedPokemonList, setDetailedPokemonList] = useState([]);
 
   const pageListLimit = 10;
 
@@ -16,6 +18,7 @@ function MainPage() {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
     const data = await res.json();
     const basePokemonDetail = data.results;
+
     const perPaginationData = data.results.slice(
       page * pageListLimit - pageListLimit,
       page * pageListLimit
@@ -59,6 +62,10 @@ function MainPage() {
   useEffect(() => {
     fetchPokemon();
   }, [page]);
+
+  // console.log(
+  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+  // );
 
   useEffect(() => {
     // Update filteredPokemon when the pokemon prop changes, or else the pokemonlist will be empty

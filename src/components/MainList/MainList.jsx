@@ -15,57 +15,83 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
 
   //   First pokemon is checked to ensure that the data does not give error of null
-  return pokemon ? (
+  return (
     <div>
-      {pokemon.length && (
-        <table className="pokemon-list-container">
-          <thead>
-            <tr>
-              <th>Pokemon</th>
-              <th>Name</th>
-              <th>Type</th>
-              <th>HP</th>
-              <th>Atk</th>
-              <th>Def</th>
-              <th>SAt</th>
-              <th>SDf</th>
-              <th>Spd</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* Let us say page is 1, and pageListLimit is 10, then the below will be
+      {pokemon.length > 0 ? (
+        Object.keys(
+          pokemon.slice(
+            page * pageListLimit - pageListLimit,
+            page * pageListLimit
+          )[0]
+        ).length > 2 ? (
+          <table className="pokemon-list-container">
+            {/* {console.log(
+            Object.keys(
+              pokemon.slice(
+                page * pageListLimit - pageListLimit,
+                page * pageListLimit
+              )[0]
+            ).length
+          )} */}
+            <thead>
+              <tr>
+                <th>Pokemon</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>HP</th>
+                <th>Atk</th>
+                <th>Def</th>
+                <th>SAt</th>
+                <th>SDf</th>
+                <th>Spd</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {/* Let us say page is 1, and pageListLimit is 10, then the below will be
           .slice(0, 10) 
           which will get us the first 10 pokemon, and since each page has 10 pokemon, it will fill the page as we map over it*/}
-            {pokemon
-              .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-              .map((pokemon) => (
-                <tr key={pokemon.name} className="pokemon-cell">
-                  <td className="pokemon-image">
-                    {/* Pokemon ID is located as second item, inside the object is the id, which we access here */}
-                    <img
-                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
-                        pokemon.url.split("/")[6]
-                      }.png`}
-                      alt={pokemon.name}
-                    />
-                  </td>
-                  <td>
-                    <span className="pokemon-name">
-                      {capitalizeFirstLetter(pokemon.name)}
-                    </span>
-                  </td>
-                  <td>
-                    <span className="pokemon-type">
-                      {console.log(pokemon)}
-                      {/* pokemon[2].types[0].type.name */}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            {console.log("TEST")}
-          </tbody>
-        </table>
+              {/* {console.log(
+              pokemon.slice(
+                page * pageListLimit - pageListLimit,
+                page * pageListLimit
+              )
+            )} */}
+              {pokemon
+                .slice(
+                  page * pageListLimit - pageListLimit,
+                  page * pageListLimit
+                )
+                .map((pokemon) => (
+                  <tr key={pokemon.name} className="pokemon-cell">
+                    <td className="pokemon-image">
+                      {/* Pokemon ID is located as second item, inside the object is the id, which we access here */}
+                      <img
+                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
+                          pokemon.url.split("/")[6]
+                        }.png`}
+                        alt={pokemon.name}
+                      />
+                    </td>
+                    <td>
+                      <span className="pokemon-name">
+                        {capitalizeFirstLetter(pokemon.name)}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="pokemon-type">
+                        {pokemon[2].types[0].type.name}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>Loading...</p>
+        )
+      ) : (
+        <p>Loading...</p>
       )}
       <UsePagination
         page={page}
@@ -74,8 +100,6 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
         pokemon={pokemon}
       />
     </div>
-  ) : (
-    <div>Loading...</div>
   );
 }
 
