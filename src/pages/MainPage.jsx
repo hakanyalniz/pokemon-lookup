@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 function MainPage() {
   const [pokemon, setPokemon] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState(pokemon);
+  const [fetchFlag, setFetchFlag] = useState(false);
   const [page, setPage] = useState(1);
 
   // const [basePokemonDetail, setBasePokemonDetail] = useState([]);
@@ -65,7 +66,15 @@ function MainPage() {
 
   useEffect(() => {
     // Update filteredPokemon when the pokemon prop changes, or else the pokemonlist will be empty
-    setFilteredPokemon(pokemon);
+    // The idea behind fetchflag and the if conditional below is that we want the filteredpokemon to run atleast once
+    // so that the pokemon list is not empty on refresh, however just having it launch on mount is not possible since the pokemon
+    // state will be empty at that moment, putting pokemon on dependency is not possible either, since then it will run everytime
+    // pokemon changes. So I used pokemon.length > 0 to make sure pokemon had fetched data and then fetchFlag === false
+    // to make sure this was only run once
+    if (pokemon.length > 0 && fetchFlag === false) {
+      setFilteredPokemon(pokemon);
+      setFetchFlag(true);
+    }
   }, [pokemon]);
 
   const handleFilterChange = (filteredArray) => {
