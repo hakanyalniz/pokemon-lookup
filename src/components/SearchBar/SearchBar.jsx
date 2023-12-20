@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 
 export default function SearchBar({
   pokemon,
+  basePokemonList,
   query,
   setQuery,
-  onFilterChange,
+  handleFilterChange,
 }) {
   const handleSearch = (e) => {
+    // console.log(pokemon);
     if (e) {
       e.preventDefault();
     }
@@ -26,8 +28,13 @@ export default function SearchBar({
     });
 
     // Call the provided callback function to update the filtered data
-    if (onFilterChange) {
-      onFilterChange(filteredArray);
+    // If query is empty, then just return the base pokemon list without alteration
+    if (handleFilterChange) {
+      if (query === "") {
+        handleFilterChange(basePokemonList);
+      } else {
+        handleFilterChange(filteredArray);
+      }
     }
   };
 

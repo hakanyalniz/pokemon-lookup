@@ -7,12 +7,9 @@ import { useState, useEffect } from "react";
 function MainPage() {
   const [pokemon, setPokemon] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState(pokemon);
-  const [fetchFlag, setFetchFlag] = useState(false);
+  const [basePokemonList, setBasePokemonList] = useState([]);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
-
-  // const [basePokemonDetail, setBasePokemonDetail] = useState([]);
-  // const [detailedPokemonList, setDetailedPokemonList] = useState([]);
 
   const pageListLimit = 10;
 
@@ -21,6 +18,7 @@ function MainPage() {
     const data = await res.json();
 
     const basePokemonDetail = data.results;
+    setBasePokemonList(basePokemonDetail);
     let perPaginationData;
     let combinedData;
 
@@ -80,7 +78,6 @@ function MainPage() {
         return { ...baseItem, ...matchingDetailedInfo };
       });
     }
-    // console.log(combinedData);
     setPokemon(combinedData);
   };
 
@@ -103,9 +100,9 @@ function MainPage() {
   }, [pokemon]);
 
   const handleFilterChange = (filteredArray) => {
+    console.log(filteredArray);
     // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
     setFilteredPokemon(filteredArray);
-
     setPage(1);
   };
 
@@ -127,9 +124,10 @@ function MainPage() {
         <div className="search-and-list">
           <SearchBar
             pokemon={pokemon}
+            basePokemonList={basePokemonList}
             query={query}
             setQuery={setQuery}
-            onFilterChange={handleFilterChange}
+            handleFilterChange={handleFilterChange}
           />
           {/* MainList gets the filteredPokemon */}
           <MainList

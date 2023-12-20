@@ -31,7 +31,7 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
             page * pageListLimit - pageListLimit,
             page * pageListLimit
           )[0]
-        ).length > 2 ? (
+        ).length > 1 ? (
           // The above 2 number is there to make sure that the extra detailed information is available
           // remove it if you are going to tinker around with added or removed pokemon array information
           // or else if the length changes, only loading might show
@@ -56,11 +56,11 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
           .slice(0, 10) 
           which will get us the first 10 pokemon, and since each page has 10 pokemon, it will fill the page as we map over it*/}
               {/* {console.log(
-              pokemon.slice(
-                page * pageListLimit - pageListLimit,
-                page * pageListLimit
-              )
-            )} */}
+                pokemon.slice(
+                  page * pageListLimit - pageListLimit,
+                  page * pageListLimit
+                )
+              )} */}
               {pokemon
                 .slice(
                   page * pageListLimit - pageListLimit,
@@ -84,7 +84,7 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
                     </td>
                     <td>
                       <span className="pokemon-type">
-                        {pokemon[2].types[0].type.name}
+                        {/* {pokemon[2].types[0].type.name} */}
                       </span>
                     </td>
                   </tr>

@@ -13,10 +13,13 @@ export default function UsePagination({
     // Adding stopPropagation helped, now instead of 1 in 10 it happens about 1 in 50 or so.
     event.preventDefault();
     event.stopPropagation();
+    // console.log(pageNumber <= Math.ceil(pokemon.length / pageListLimit));
 
+    // The math ceil added below and in handlePageNumbers, is for cases wherein we have a number of pokemon between 10 and 20,
+    // As in, numbers like 15, 25, 35 and so on. Those extra pokemon, the 5 and so on, get lost if we don't use ceiling
     if (
       pageNumber > 0 &&
-      pageNumber <= pokemon.length / pageListLimit &&
+      pageNumber <= Math.ceil(pokemon.length / pageListLimit) &&
       pageNumber !== page
     )
       setPage(pageNumber);
@@ -30,7 +33,7 @@ export default function UsePagination({
   const handlePageNumbers = () => {
     // pokemon length, let us say might be 100, divided by the number of pokemon per page (let us say 10)
     // gets us the total number of pages we will have, which will also be 10
-    let totalNumberOfPages = Math.floor(pokemon.length / pageListLimit);
+    let totalNumberOfPages = Math.ceil(pokemon.length / pageListLimit);
     let pageNumberArray = [];
 
     let finalPageNumberArray;
