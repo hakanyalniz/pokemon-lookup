@@ -15,9 +15,9 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
   const emptyArray = [...Array(10)].map((_, i) => i + 1);
   // console.log(pokemon);
-  // console.log(
-  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-  // );
+  console.log(
+    pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+  );
 
   //   First pokemon is checked to ensure that the data does not give error of null
   return (

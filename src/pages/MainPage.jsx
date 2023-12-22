@@ -8,22 +8,34 @@ function MainPage() {
   const [pokemon, setPokemon] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState(pokemon);
   const [basePokemonList, setBasePokemonList] = useState([]);
+  const [fetchFlag, setFetchFlag] = useState(false);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
 
   const pageListLimit = 10;
 
-  const fetchPokemon = async () => {
+  // console.log(
+  //   basePokemonList.length > filteredPokemon.length &&
+  //     filteredPokemon.length > 0
+  // );
+  // console.log(filteredPokemon);
+
+  const fetchPokemonBase = async () => {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
     const data = await res.json();
 
     const basePokemonDetail = data.results;
     setBasePokemonList(basePokemonDetail);
+  };
+
+  const fetchPokemonDetails = async () => {
     let perPaginationData;
     let combinedData;
 
+    // If nothing is being searched, look through basePokemonList
+    // If something is being searched, look through the filtered list instead
     if (query === "") {
-      perPaginationData = data.results.slice(
+      perPaginationData = basePokemonList.slice(
         page * pageListLimit - pageListLimit,
         page * pageListLimit
       );
@@ -64,7 +76,7 @@ function MainPage() {
     // Using base info in both, would give bugs. Since, the whole point of filtered list is to shorten the list
     // when we combine the details from filtered list to base, which has all the pokemon, the list will extend again
     if (query === "") {
-      combinedData = basePokemonDetail.map((baseItem) => {
+      combinedData = basePokemonList.map((baseItem) => {
         const matchingDetailedInfo = detailedPokemonList.find(
           (detailedItem) => detailedItem[0].name === baseItem.name
         );
@@ -77,40 +89,54 @@ function MainPage() {
         );
         return { ...baseItem, ...matchingDetailedInfo };
       });
+      // console.log("combineddata", combinedData);
+      // console.log("filteredPokemon inside combined", filteredPokemon);
     }
-    setPokemon(combinedData);
+
+    if (query !== "") {
+      // console.log("firing");
+      setFilteredPokemon(combinedData); // Set filteredPokemon directly
+    } else {
+      setPokemon(combinedData); // Set pokemon for the base list
+    }
+    // when query is full and has search string inside it
+    // if (query !== "") {
+    //   console.log("pokemon", pokemon);
+    //   setFilteredPokemon(combinedData);
+    // }
   };
 
+  // Run the fetch functions atleast once
   useEffect(() => {
-    fetchPokemon();
-  }, [page]);
-
+    fetchPokemonBase();
+  }, []);
+  // Only run when fetchPokemonBase is complete
   useEffect(() => {
-    // Update filteredPokemon when the pokemon prop changes, or else the pokemonlist will be empty
-    // The idea behind fetchflag and the if conditional below is that we want the filteredpokemon to run atleast once
-    // so that the pokemon list is not empty on refresh, however just having it launch on mount is not possible since the pokemon
-    // state will be empty at that moment, putting pokemon on dependency is not possible either, since then it will run everytime
-    // pokemon changes. So I used pokemon.length > 0 to make sure pokemon had fetched data and then fetchFlag === false
-    // to make sure this was only run once
-    // if (pokemon.length > 0 && fetchFlag === false) {
-    //   setFilteredPokemon(pokemon);
-    //   setFetchFlag(true);
-    // }
-    setFilteredPokemon(pokemon);
-  }, [pokemon]);
+    fetchPokemonDetails();
+  }, [basePokemonList]);
 
   const handleFilterChange = (filteredArray) => {
-    console.log(filteredArray);
     // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
     setFilteredPokemon(filteredArray);
     setPage(1);
   };
 
-  // We call fetchPokemon when filteredPokemon is changed or else we can't update based on filter changes
-  // useEffect(() => {
-  //   fetchPokemon();
-  //   // console.log(filteredPokemon);
-  // }, [filteredPokemon]);
+  // We need to call the details on the new filteredPokemons, but only do it once
+  // the rest will be done when the page is changed
+  useEffect(() => {
+    if (filteredPokemon.length > 0 && fetchFlag === false) {
+      fetchPokemonDetails();
+      setFetchFlag(true);
+    }
+  }, [filteredPokemon]);
+
+  // Each page, call pokemonDetail to fetch more detailed data
+  // This is done because detailed data is only fetched per page and not whole
+  useEffect(() => {
+    fetchPokemonDetails();
+  }, [page]);
+
+  const finalPokemon = filteredPokemon.length > 0 ? filteredPokemon : pokemon;
 
   return (
     <>
@@ -131,7 +157,7 @@ function MainPage() {
           />
           {/* MainList gets the filteredPokemon */}
           <MainList
-            pokemon={filteredPokemon}
+            pokemon={finalPokemon}
             pageListLimit={pageListLimit}
             page={page}
             setPage={setPage}
