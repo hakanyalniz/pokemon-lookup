@@ -14,12 +14,6 @@ function MainPage() {
 
   const pageListLimit = 10;
 
-  // console.log(
-  //   basePokemonList.length > filteredPokemon.length &&
-  //     filteredPokemon.length > 0
-  // );
-  // console.log(filteredPokemon);
-
   const fetchPokemonBase = async () => {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
     const data = await res.json();
@@ -89,21 +83,13 @@ function MainPage() {
         );
         return { ...baseItem, ...matchingDetailedInfo };
       });
-      // console.log("combineddata", combinedData);
-      // console.log("filteredPokemon inside combined", filteredPokemon);
     }
 
     if (query !== "") {
-      // console.log("firing");
       setFilteredPokemon(combinedData); // Set filteredPokemon directly
     } else {
       setPokemon(combinedData); // Set pokemon for the base list
     }
-    // when query is full and has search string inside it
-    // if (query !== "") {
-    //   console.log("pokemon", pokemon);
-    //   setFilteredPokemon(combinedData);
-    // }
   };
 
   // Run the fetch functions atleast once
@@ -169,3 +155,7 @@ function MainPage() {
 }
 
 export default MainPage;
+
+// There seems to be a bug wherein even though the relevant information has been fetched, the list still shows Loading...
+// This only seems to happen when clicking at other pages
+// Perhaps a problem in the order of operation of codes?

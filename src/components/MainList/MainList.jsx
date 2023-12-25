@@ -14,10 +14,9 @@ function capitalizeFirstLetter(word) {
 export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
   const emptyArray = [...Array(10)].map((_, i) => i + 1);
-  // console.log(pokemon);
-  // console.log(
-  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-  // );
+  const lastItemIndex =
+    pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+      .length - 1;
 
   //   First pokemon is checked to ensure that the data does not give error of null
   return (
@@ -25,12 +24,13 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
       {/* The first requirement is neccesary because for the initial cycles of updates, the pokemon array is empty
       therefore if I tried to use length on it, it would give error. The second one is there because the update for the neccessary detailed information only arrives after 3 or so cycles
       therefore this check is required.  */}
+      {/* lastItemIndex is used to look if the last item has finished loading, this is needed because the number of pokemons shown on list can change */}
       {pokemon.length > 0 ? (
         Object.keys(
           pokemon.slice(
             page * pageListLimit - pageListLimit,
             page * pageListLimit
-          )[9]
+          )[lastItemIndex]
         ).length > 2 ? (
           // The above 2 number is there to make sure that the extra detailed information is available
           // remove it if you are going to tinker around with added or removed pokemon array information
@@ -84,8 +84,64 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
                     </td>
                     <td>
                       <span className="pokemon-type">
-                        {pokemon[2].types[0].type.name}
+                        {pokemon[2].types.map((types, index) => (
+                          <p key={index}>{types.type.name}</p>
+                        ))}
                       </span>
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-HP">
+                          {pokemon[3].stats[0].base_stat}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-ATK">
+                          {pokemon[3].stats[1].base_stat}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-DEF">
+                          {pokemon[3].stats[2].base_stat}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-SAT">
+                          {pokemon[3].stats[3].base_stat}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-SDF">
+                          {pokemon[3].stats[4].base_stat}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-SPD">
+                          {pokemon[3].stats[5].base_stat}
+                        </span>
+                      }
+                    </td>
+                    <td>
+                      {
+                        <span className="pokemon-TOTAL">
+                          {/* Get all of the stats in an array via map, then get their sum via reduce */}
+                          {pokemon[3].stats
+                            .map((stats) => stats.base_stat)
+                            .reduce((accumulator, currentNumber) => {
+                              return accumulator + currentNumber;
+                            }, 0)}
+                        </span>
+                      }
                     </td>
                   </tr>
                 ))}
