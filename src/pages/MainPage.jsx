@@ -4,7 +4,7 @@ import SearchBar from "../components/SearchBar/SearchBar.jsx";
 import MainList from "../components/MainList/MainList";
 import { useState, useEffect } from "react";
 
-function MainPage() {
+export default function MainPage() {
   const [pokemon, setPokemon] = useState([]);
   const [filteredPokemon, setFilteredPokemon] = useState(pokemon);
   const [basePokemonList, setBasePokemonList] = useState([]);
@@ -153,8 +153,6 @@ function MainPage() {
     </>
   );
 }
-
-export default MainPage;
 
 // There seems to be a bug wherein even though the relevant information has been fetched, the list still shows Loading...
 // This only seems to happen when clicking at other pages

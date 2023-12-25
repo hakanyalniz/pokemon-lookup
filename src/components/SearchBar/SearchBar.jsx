@@ -1,5 +1,5 @@
 import "./SearchBar.css";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function SearchBar({
   pokemon,
