@@ -15,9 +15,9 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
   const emptyArray = [...Array(10)].map((_, i) => i + 1);
   // console.log(pokemon);
-  console.log(
-    pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-  );
+  // console.log(
+  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+  // );
 
   //   First pokemon is checked to ensure that the data does not give error of null
   return (
@@ -30,8 +30,8 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
           pokemon.slice(
             page * pageListLimit - pageListLimit,
             page * pageListLimit
-          )[0]
-        ).length > 1 ? (
+          )[9]
+        ).length > 2 ? (
           // The above 2 number is there to make sure that the extra detailed information is available
           // remove it if you are going to tinker around with added or removed pokemon array information
           // or else if the length changes, only loading might show
@@ -84,7 +84,7 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
                     </td>
                     <td>
                       <span className="pokemon-type">
-                        {/* {pokemon[2].types[0].type.name} */}
+                        {pokemon[2].types[0].type.name}
                       </span>
                     </td>
                   </tr>
