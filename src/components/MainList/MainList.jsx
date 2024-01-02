@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import "./MainList.css";
+import { Link } from "react-router-dom";
 import UsePagination from "../usePagination/UsePagination";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
@@ -70,12 +71,12 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
                   <tr key={pokemon.name} className="pokemon-cell">
                     <td className="pokemon-image">
                       {/* Pokemon ID is located as second item, inside the object is the id, which we access here */}
-                      <img
-                        src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
-                          pokemon.url.split("/")[6]
-                        }.png`}
-                        alt={pokemon.name}
-                      />
+                      <Link to={`/pokemon/${pokemon[1].id}`}>
+                        <img
+                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon[1].id}.png`}
+                          alt={pokemon.name}
+                        />
+                      </Link>
                     </td>
                     <td>
                       <span className="pokemon-name">

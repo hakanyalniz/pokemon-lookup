@@ -1,3 +1,4 @@
+import TopNavBar from "../components/TopNavBar/TopNavBar";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -18,5 +19,10 @@ export default function PokemonDetail() {
     fetchPokemonBase();
   }, []);
 
-  return <p>{currentPokemon.name}</p>;
+  return (
+    <>
+      <TopNavBar />
+      <p>{currentPokemon.name}</p>
+    </>
+  );
 }
