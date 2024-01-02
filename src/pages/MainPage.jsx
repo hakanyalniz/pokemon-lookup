@@ -25,7 +25,13 @@ export default function MainPage() {
   const fetchPokemonDetails = async () => {
     let perPaginationData;
     let combinedData;
-
+    // If there is no query, and therefore no filter, then let filteredPokemon be empty, if it is filled, then when we are assigning the finalPokemon,
+    // it will be seen as if filteredpokemon has items. The only time filteredpokemon has items is if something is being searched
+    // The reason it is populated despite the query being empty is because of previous search items still persisting inside filteredpokemon
+    // This caused a bug if you searched something, deleted it, then tried to browse the full base list
+    if (query === "") {
+      setFilteredPokemon([]);
+    }
     // If nothing is being searched, look through basePokemonList
     // If something is being searched, look through the filtered list instead
     if (query === "") {
@@ -64,6 +70,7 @@ export default function MainPage() {
         ];
       }
     );
+
     // Just like above, there are two situations. One, no search is done, two, search is done
     // These two situations require different handling
     // mainly, in one, the base pokemon info is used, in other, the filtered pokemon list is used
@@ -92,11 +99,11 @@ export default function MainPage() {
     }
   };
 
-  // Run the fetch functions atleast once
+  // Run the fetch functions atleast once, so the initial pokemons are loaded
   useEffect(() => {
     fetchPokemonBase();
   }, []);
-  // Only run when fetchPokemonBase is complete
+  // Only run when fetchPokemonBase is complete, or else the fetchPokemonDetails which uses PokemonBase will give error
   useEffect(() => {
     fetchPokemonDetails();
   }, [basePokemonList]);
@@ -104,11 +111,15 @@ export default function MainPage() {
   const handleFilterChange = (filteredArray) => {
     // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
     setFilteredPokemon(filteredArray);
+    setFetchFlag(false);
+
     setPage(1);
   };
 
-  // We need to call the details on the new filteredPokemons, but only do it once
-  // the rest will be done when the page is changed
+  // fetchPokemonDetails must run everytime filteredPokemon changes, or else the UI will not update properly when searching is involved
+  // For example: after searching, if the fetchPokemonDetails is not run, then the newly shown pokemon details will not update
+  // However, if fetch details is run everytime filteredPokemon changes (therefore if a search is done) then it will enter infinite loop
+  // To prevent this, a flag system is used, once fetch details is run the flag is set so it doesn't run again, unless a new search is done
   useEffect(() => {
     if (filteredPokemon.length > 0 && fetchFlag === false) {
       fetchPokemonDetails();
@@ -116,14 +127,23 @@ export default function MainPage() {
     }
   }, [filteredPokemon]);
 
+  // We need to call the details on the new filteredPokemons, but only do it once
+  // the rest will be done when the page is changed
+  // useEffect(() => {
+  //   if (filteredPokemon.length > 0 && fetchFlag === false) {
+  //     fetchPokemonDetails();
+  //     setFetchFlag(true);
+  //     console.log("filteredPokemonChanged firte once");
+  //   }
+  // }, [filteredPokemon]);
+
   // Each page, call pokemonDetail to fetch more detailed data
   // This is done because detailed data is only fetched per page and not whole
   useEffect(() => {
     fetchPokemonDetails();
   }, [page]);
 
-  const finalPokemon = filteredPokemon.length > 0 ? filteredPokemon : pokemon;
-
+  let finalPokemon = filteredPokemon.length > 0 ? filteredPokemon : pokemon;
   return (
     <>
       <TopNavBar />
@@ -157,3 +177,7 @@ export default function MainPage() {
 // There seems to be a bug wherein even though the relevant information has been fetched, the list still shows Loading...
 // This only seems to happen when clicking at other pages
 // Perhaps a problem in the order of operation of codes?
+
+// when searching, instead of showing nothing when searching nonsense, it instead shows the full list
+
+// Detailed updates are coming one tick late in certain circumstances

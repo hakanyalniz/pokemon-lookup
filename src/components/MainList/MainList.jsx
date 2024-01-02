@@ -18,7 +18,6 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   const lastItemIndex =
     pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
       .length - 1;
-
   //   First pokemon is checked to ensure that the data does not give error of null
   return (
     <div>
