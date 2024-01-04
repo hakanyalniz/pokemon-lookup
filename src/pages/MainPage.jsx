@@ -3,6 +3,16 @@ import TopNavBar from "../components/TopNavBar/TopNavBar.jsx";
 import SearchBar from "../components/SearchBar/SearchBar.jsx";
 import MainList from "../components/MainList/MainList";
 import { useState, useEffect } from "react";
+// Importing neccessary imports for redux store
+import {
+  setBasePokemonArray,
+  setPokemonArray,
+  setFilteredPokemonArray,
+  fetchPokemonBase,
+  selectBasePokemonArray,
+  selectPokemonArray,
+  selectFilteredPokemonArray,
+} from "./pokemonSlice.js";
 
 export default function MainPage() {
   const [pokemon, setPokemon] = useState([]);

@@ -1,5 +1,5 @@
-import Mainpage from "./MainPage.jsx";
-import PokemonDetail from "./PokemonDetail.jsx";
+import Mainpage from "./pages/MainPage.jsx";
+import PokemonDetail from "./pages/PokemonDetail.jsx";
 import { Routes, Route } from "react-router-dom";
 
 export default function App() {
