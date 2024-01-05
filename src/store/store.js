@@ -3,6 +3,6 @@ import pokemonReducer from "../pages/pokemonSlice";
 
 export default configureStore({
   reducer: {
-    counter: pokemonReducer,
+    pokemon: pokemonReducer,
   },
 });

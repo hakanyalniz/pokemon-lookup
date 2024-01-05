@@ -36,7 +36,7 @@ export const fetchPokemonBase = () => {
       const data = await res.json();
 
       const basePokemonDetail = data.results;
-      dispatch(basePokemonDetail);
+      dispatch(setBasePokemonArray(basePokemonDetail));
     } catch (err) {
       console.log(err);
     }

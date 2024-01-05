@@ -186,7 +186,7 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
           </table>
         )
       ) : (
-        <p>Loading...</p>
+        <p>No Data Found</p>
       )}
       <UsePagination
         page={page}

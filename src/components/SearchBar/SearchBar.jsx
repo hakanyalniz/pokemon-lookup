@@ -1,21 +1,28 @@
 import "./SearchBar.css";
 import { useEffect } from "react";
+import {
+  selectBasePokemonArray,
+  selectPokemonArray,
+} from "../../pages/pokemonSlice";
+import { useSelector } from "react-redux";
 
 export default function SearchBar({
-  pokemon,
-  basePokemonList,
+  // pokemon,
+  // basePokemonList,
   query,
   setQuery,
   handleFilterChange,
 }) {
+  const basePokemonArray = useSelector(selectBasePokemonArray);
+  const pokemonArray = useSelector(selectPokemonArray);
+
   const handleSearch = (e) => {
-    // console.log(pokemon);
     if (e) {
       e.preventDefault();
     }
 
     // Pokemon is an array of objects
-    const filteredArray = pokemon.filter((pokemonObject) => {
+    const filteredArray = pokemonArray.filter((pokemonObject) => {
       if (query === "") {
         return pokemonObject;
       } else if (
@@ -27,11 +34,13 @@ export default function SearchBar({
       }
     });
 
+    // console.log(filteredArray);
+
     // Call the provided callback function to update the filtered data
     // If query is empty, then just return the base pokemon list without alteration
     if (handleFilterChange) {
       if (query === "") {
-        handleFilterChange(basePokemonList);
+        handleFilterChange(basePokemonArray);
       } else {
         handleFilterChange(filteredArray);
       }
