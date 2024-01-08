@@ -29,7 +29,7 @@ export const { setBasePokemonArray, setPokemonArray, setFilteredPokemonArray } =
 
 // Thunk for async code
 export const fetchPokemonBase = () => {
-  return async (dispatch, getState) => {
+  return async (dispatch) => {
     try {
       // make an async call in the thunk
       const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
