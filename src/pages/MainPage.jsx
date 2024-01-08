@@ -5,7 +5,6 @@ import MainList from "../components/MainList/MainList";
 import { useState, useEffect } from "react";
 // Importing neccessary imports for redux store
 import {
-  setBasePokemonArray,
   setPokemonArray,
   setFilteredPokemonArray,
   fetchPokemonBase,
@@ -23,22 +22,11 @@ export default function MainPage() {
   const filteredPokemonArray = useSelector(selectFilteredPokemonArray);
   const dispatch = useDispatch();
 
-  // const [pokemon, setPokemon] = useState([]);
-  const [filteredPokemon, setFilteredPokemon] = useState(pokemonArray);
-  // const [basePokemonList, setBasePokemonList] = useState([]);
   const [fetchFlag, setFetchFlag] = useState(false);
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
 
   const pageListLimit = 10;
-
-  // const fetchPokemonBase = async () => {
-  //   const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
-  //   const data = await res.json();
-
-  //   const basePokemonDetail = data.results;
-  //   setBasePokemonList(basePokemonDetail);
-  // };
 
   useEffect(() => {
     dispatch(fetchPokemonBase());
@@ -52,7 +40,7 @@ export default function MainPage() {
     // The reason it is populated despite the query being empty is because of previous search items still persisting inside filteredpokemon
     // This caused a bug if you searched something, deleted it, then tried to browse the full base list
     if (query === "") {
-      setFilteredPokemon([]);
+      dispatch(setFilteredPokemonArray([]));
     }
     // If nothing is being searched, look through basePokemonList
     // If something is being searched, look through the filtered list instead
@@ -62,7 +50,7 @@ export default function MainPage() {
         page * pageListLimit
       );
     } else {
-      perPaginationData = filteredPokemon.slice(
+      perPaginationData = filteredPokemonArray.slice(
         page * pageListLimit - pageListLimit,
         page * pageListLimit
       );
@@ -106,7 +94,7 @@ export default function MainPage() {
         return { ...baseItem, ...matchingDetailedInfo };
       });
     } else {
-      combinedData = filteredPokemon.map((baseItem) => {
+      combinedData = filteredPokemonArray.map((baseItem) => {
         const matchingDetailedInfo = detailedPokemonList.find(
           (detailedItem) => detailedItem[0].name === baseItem.name
         );
@@ -115,7 +103,7 @@ export default function MainPage() {
     }
 
     if (query !== "") {
-      setFilteredPokemon(combinedData); // Set filteredPokemon directly
+      dispatch(setFilteredPokemonArray(combinedData)); // Set filteredPokemon directly
     } else {
       dispatch(setPokemonArray(combinedData)); // Set pokemon for the base list
     }
@@ -131,9 +119,10 @@ export default function MainPage() {
   }, [basePokemonArray]);
 
   const handleFilterChange = (filteredArray) => {
-    // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
-    setFilteredPokemon(filteredArray);
     setFetchFlag(false);
+
+    // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
+    dispatch(setFilteredPokemonArray(filteredArray));
 
     setPage(1);
   };
@@ -143,21 +132,11 @@ export default function MainPage() {
   // However, if fetch details is run everytime filteredPokemon changes (therefore if a search is done) then it will enter infinite loop
   // To prevent this, a flag system is used, once fetch details is run the flag is set so it doesn't run again, unless a new search is done
   useEffect(() => {
-    if (filteredPokemon.length > 0 && fetchFlag === false) {
+    if (filteredPokemonArray.length > 0 && fetchFlag === false) {
       fetchPokemonDetails();
       setFetchFlag(true);
     }
-  }, [filteredPokemon]);
-
-  // We need to call the details on the new filteredPokemons, but only do it once
-  // the rest will be done when the page is changed
-  // useEffect(() => {
-  //   if (filteredPokemon.length > 0 && fetchFlag === false) {
-  //     fetchPokemonDetails();
-  //     setFetchFlag(true);
-  //     console.log("filteredPokemonChanged firte once");
-  //   }
-  // }, [filteredPokemon]);
+  }, [filteredPokemonArray, fetchFlag]);
 
   // Each page, call pokemonDetail to fetch more detailed data
   // This is done because detailed data is only fetched per page and not whole
@@ -169,10 +148,11 @@ export default function MainPage() {
   // when searching, instead of showing nothing when searching nonsense, it instead shows the full list
   // When the above happens, the filterArray is empty, so instead of showing the empty filterArray it instead shows the full list
   let finalPokemon;
-  if (query !== "" && filteredPokemon.length == 0) {
-    finalPokemon = filteredPokemon;
+  if (query !== "" && filteredPokemonArray.length == 0) {
+    finalPokemon = filteredPokemonArray;
   } else {
-    finalPokemon = filteredPokemon.length > 0 ? filteredPokemon : pokemonArray;
+    finalPokemon =
+      filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
   }
 
   return (
@@ -206,5 +186,3 @@ export default function MainPage() {
 }
 
 // Detailed updates are coming one tick late in certain circumstances
-
-// Turning filteredArray into its store version causes errors for some reason
