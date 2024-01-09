@@ -33,3 +33,13 @@
   -webkit-text-fill-color: #ffcb05;
   -webkit-text-stroke: 2px #3c5aa6;
 }
+
+@media (max-width: 440px) {
+  /* Selectors for table cells you want to hide */
+  .nav-bar .title {
+    font-size: 6vw;
+  }
+  .nav-bar img {
+    display: none;
+  }
+}

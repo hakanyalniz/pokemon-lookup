@@ -15,3 +15,9 @@
   max-width: 100%;
   user-select: none;
 }
+
+@media (max-width: 450px) {
+  .hide-on-450 {
+    display: none;
+  }
+}

@@ -236,7 +236,7 @@ export default function MainPage() {
         <img
           src="./logo/PokemonLogo.png"
           alt="Pokemon Logo"
-          className="pokemon-logo"
+          className="pokemon-logo hide-on-450"
         />
         <div className="search-and-list">
           <SearchBar

@@ -27,3 +27,38 @@
 .pokemon-list-container ul {
   list-style-type: none;
 }
+
+@media (max-width: 600px) {
+  /* Selectors for table cells you want to hide */
+  .pokemon-list-container .hide-on-600 {
+    display: none;
+  }
+}
+
+@media (max-width: 540px) {
+  /* Selectors for table cells you want to hide */
+  .pokemon-list-container .hide-on-540 {
+    display: none;
+  }
+}
+
+@media (max-width: 500px) {
+  /* Selectors for table cells you want to hide */
+  .pokemon-list-container .hide-on-500 {
+    display: none;
+  }
+}
+
+@media (max-width: 440px) {
+  /* Selectors for table cells you want to hide */
+  .pokemon-list-container .hide-on-440 {
+    display: none;
+  }
+}
+
+@media (max-width: 350px) {
+  /* Selectors for table cells you want to hide */
+  .pokemon-list-container .hide-on-350 {
+    display: none;
+  }
+}

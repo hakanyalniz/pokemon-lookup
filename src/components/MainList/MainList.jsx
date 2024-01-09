@@ -41,14 +41,14 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
               <tr>
                 <th>Pokemon</th>
                 <th>Name</th>
-                <th>Type</th>
-                <th>HP</th>
-                <th>Atk</th>
-                <th>Def</th>
-                <th>SAt</th>
-                <th>SDf</th>
-                <th>Spd</th>
-                <th>Total</th>
+                <th className="hide-on-350">Type</th>
+                <th className="hide-on-440">HP</th>
+                <th className="hide-on-440">Atk</th>
+                <th className="hide-on-440">Def</th>
+                <th className="hide-on-500">SAt</th>
+                <th className="hide-on-500">SDf</th>
+                <th className="hide-on-540">Spd</th>
+                <th className="hide-on-600">Total</th>
               </tr>
             </thead>
             <tbody>
@@ -82,56 +82,56 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
                         {capitalizeFirstLetter(pokemon.name)}
                       </span>
                     </td>
-                    <td>
+                    <td className="hide-on-350">
                       <span className="pokemon-type">
                         {pokemon[2].types.map((types, index) => (
                           <p key={index}>{types.type.name}</p>
                         ))}
                       </span>
                     </td>
-                    <td>
+                    <td className="hide-on-440">
                       {
                         <span className="pokemon-HP">
                           {pokemon[3].stats[0].base_stat}
                         </span>
                       }
                     </td>
-                    <td>
+                    <td className="hide-on-440">
                       {
                         <span className="pokemon-ATK">
                           {pokemon[3].stats[1].base_stat}
                         </span>
                       }
                     </td>
-                    <td>
+                    <td className="hide-on-440">
                       {
                         <span className="pokemon-DEF">
                           {pokemon[3].stats[2].base_stat}
                         </span>
                       }
                     </td>
-                    <td>
+                    <td className="hide-on-500">
                       {
                         <span className="pokemon-SAT">
                           {pokemon[3].stats[3].base_stat}
                         </span>
                       }
                     </td>
-                    <td>
+                    <td className="hide-on-500">
                       {
                         <span className="pokemon-SDF">
                           {pokemon[3].stats[4].base_stat}
                         </span>
                       }
                     </td>
-                    <td>
+                    <td className="hide-on-540">
                       {
                         <span className="pokemon-SPD">
                           {pokemon[3].stats[5].base_stat}
                         </span>
                       }
                     </td>
-                    <td>
+                    <td className="hide-on-600">
                       {
                         <span className="pokemon-TOTAL">
                           {/* Get all of the stats in an array via map, then get their sum via reduce */}
