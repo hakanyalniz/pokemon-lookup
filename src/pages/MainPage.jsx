@@ -67,19 +67,93 @@ export default function MainPage() {
       })
     );
 
-    const detailedPokemonList = temporaryDetailedPokemonList.map(
+    // Doing additional fetch for the species URL, will add to temporaryDetailedPokemonList
+    // Once again Promise.all is needed, or else map won't wait and just return the promises
+    const temporarySpeciesFetch = await Promise.all(
+      temporaryDetailedPokemonList.map(async (pokemonElement) => {
+        const res = await fetch(pokemonElement.species.url);
+        const newData = await res.json();
+
+        // Only picking up the entry for english language
+        const selectedGenus = newData.genera.find(
+          (languageObj) => languageObj.language.name === "en"
+        );
+        // Find, finds only one, filter selects all
+        const selected_flavor_text = newData.flavor_text_entries.filter(
+          (flavor) => flavor.language.name === "en"
+        );
+
+        // Easier way of adding the variables to the finalData object, better to manage
+        const {
+          base_happiness,
+          capture_rate,
+          egg_groups,
+          growth_rate,
+          habitat,
+          hatch_counter,
+        } = newData;
+
+        const finalData = {
+          base_happiness,
+          capture_rate,
+          egg_groups,
+          selected_flavor_text,
+          selectedGenus,
+          growth_rate,
+          habitat,
+          hatch_counter,
+        };
+
+        return finalData;
+      })
+    );
+
+    // Combines temp detailed list and temp species list
+    const temporaryCombinedDetailAndSpecies = temporaryDetailedPokemonList.map(
+      (element, index) => {
+        return (element = { ...element, ...temporarySpeciesFetch[index] });
+      }
+    );
+
+    const detailedPokemonList = temporaryCombinedDetailAndSpecies.map(
       (pokemonDetail) => {
+        const {
+          name,
+          id,
+          types,
+          stats,
+          abilities,
+          height,
+          weight,
+          base_experience,
+          base_happiness,
+          capture_rate,
+          egg_groups,
+          growth_rate,
+          habitat,
+          hatch_counter,
+        } = pokemonDetail;
+
         return [
-          { name: pokemonDetail.name },
-          { id: pokemonDetail.id },
-          { types: pokemonDetail.types },
-          { stats: pokemonDetail.stats },
-          { abilities: pokemonDetail.abilities },
-          { height: pokemonDetail.height },
-          { weight: pokemonDetail.weight },
+          { name },
+          { id },
+          { types },
+          { stats },
+          { abilities },
+          { height },
+          { weight },
+          { base_experience },
+          { base_happiness },
+          { capture_rate },
+          { egg_groups },
+          { growth_rate },
+          { habitat },
+          { hatch_counter },
         ];
       }
     );
+
+    // console.log(detailedPokemonList);
 
     // Just like above, there are two situations. One, no search is done, two, search is done
     // These two situations require different handling

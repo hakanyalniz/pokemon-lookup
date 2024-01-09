@@ -40,6 +40,7 @@ export default function PokemonDetail() {
   return (
     <>
       <TopNavBar />
+      {console.log(currentPokemon)}
       <p>{currentPokemon.name}</p>
     </>
   );
