@@ -171,13 +171,34 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
                 return (
                   <tr key={i} className="pokemon-cell">
                     <td className="pokemon-image">
-                      <span>Loading...</span>
+                      <span></span>
                     </td>
                     <td>
-                      <span className="pokemon-name">Loading... </span>
+                      <span className="pokemon-name">Loading...</span>
                     </td>
                     <td>
-                      <span className="pokemon-type">Loading... </span>
+                      <span className="pokemon-type"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-HP"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-ATK"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-DEF"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-SAT"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-SDF"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-SPD"></span>
+                    </td>
+                    <td>
+                      <span className="pokemon-TOTAL"></span>
                     </td>
                   </tr>
                 );

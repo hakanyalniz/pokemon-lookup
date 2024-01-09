@@ -69,7 +69,7 @@ export default function MainPage() {
 
     // Doing additional fetch for the species URL, will add to temporaryDetailedPokemonList
     // Once again Promise.all is needed, or else map won't wait and just return the promises
-    const temporarySpeciesFetch = await Promise.all(
+    const temporarySpeciesFetchList = await Promise.all(
       temporaryDetailedPokemonList.map(async (pokemonElement) => {
         const res = await fetch(pokemonElement.species.url);
         const newData = await res.json();
@@ -111,7 +111,7 @@ export default function MainPage() {
     // Combines temp detailed list and temp species list
     const temporaryCombinedDetailAndSpecies = temporaryDetailedPokemonList.map(
       (element, index) => {
-        return (element = { ...element, ...temporarySpeciesFetch[index] });
+        return (element = { ...element, ...temporarySpeciesFetchList[index] });
       }
     );
 

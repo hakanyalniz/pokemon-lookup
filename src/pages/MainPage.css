@@ -10,7 +10,8 @@
 }
 
 .main-body .pokemon-logo {
-  height: 500px;
+  max-height: 500px;
+  height: auto;
+  max-width: 100%;
   user-select: none;
 }
-
