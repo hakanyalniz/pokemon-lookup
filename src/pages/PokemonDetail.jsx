@@ -1,4 +1,5 @@
 import TopNavBar from "../components/TopNavBar/TopNavBar";
+import "./PokemonDetail.css";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { selectFilteredPokemonArray, selectPokemonArray } from "./pokemonSlice";
@@ -40,8 +41,12 @@ export default function PokemonDetail() {
   return (
     <>
       <TopNavBar />
-      {console.log(currentPokemon)}
-      <p>{currentPokemon.name}</p>
+      <div className="main-body">
+        {console.log(currentPokemon)}
+        <p>{currentPokemon.name}</p>
+      </div>
     </>
   );
 }
+
+// https://pokemondb.net/pokedex/bulbasaur

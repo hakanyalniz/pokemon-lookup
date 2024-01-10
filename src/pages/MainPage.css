@@ -1,23 +1,22 @@
-#root {
-  margin: 0 auto;
-}
-
-/* Center the main body of the page */
-.main-body {
-  max-width: 80%;
-  margin: 0 auto;
-  text-align: center;
-}
-
 .main-body .pokemon-logo {
+  display: block;
+  margin: 0 auto;
+
   max-height: 500px;
   height: auto;
   max-width: 100%;
   user-select: none;
 }
 
+.main-body {
+  background-color: rgb(17, 17, 17);
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 0 10px;
+}
+
 @media (max-width: 450px) {
-  .hide-on-450 {
+  .main-body .hide-on-450 {
     display: none;
   }
 }

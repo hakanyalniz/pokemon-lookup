@@ -234,7 +234,7 @@ export default function MainPage() {
       <TopNavBar />
       <div className="main-body">
         <img
-          src="./logo/PokemonLogo.png"
+          src="./logo/PokemonLogoBlack.png"
           alt="Pokemon Logo"
           className="pokemon-logo hide-on-450"
         />

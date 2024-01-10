@@ -7,11 +7,12 @@
   border-collapse: separate;
   border-spacing: 0 5px;
 
-  background-color: #0c0032;
+  /* background-color: #0c0032; */
 }
 
 .pokemon-list-container .pokemon-cell {
-  background-color: #240099;
+  /* background-color: #240099; */
+  background-color: black;
 }
 
 .pokemon-list-container .pokemon-image img,
