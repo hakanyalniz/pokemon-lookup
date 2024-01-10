@@ -15,6 +15,10 @@
   background-color: black;
 }
 
+.pokemon-list-container .pokemon-cell:hover {
+  background-color: rgb(29, 29, 29);
+}
+
 .pokemon-list-container .pokemon-image img,
 .pokemon-list-container .pokemon-image {
   height: 100px;
@@ -27,6 +31,10 @@
 
 .pokemon-list-container ul {
   list-style-type: none;
+}
+
+.pokemon-list-container .pokemon-cell .pokemon-TOTAL {
+  font-weight: bold;
 }
 
 @media (max-width: 600px) {
