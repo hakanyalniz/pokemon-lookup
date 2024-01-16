@@ -1,0 +1,17 @@
+.grid-row {
+  display: grid;
+  grid-template-columns: auto 2fr 1fr;
+
+  gap: 30px;
+}
+
+.additionalInfo {
+  display: grid;
+  flex-direction: row;
+  grid-template-columns: 1fr;
+}
+
+.sub-title {
+  font-size: 2rem;
+  font-weight: bold;
+}

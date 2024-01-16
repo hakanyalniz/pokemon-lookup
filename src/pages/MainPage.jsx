@@ -115,6 +115,7 @@ export default function MainPage() {
       }
     );
 
+    // Taking what we need from the data
     const detailedPokemonList = temporaryCombinedDetailAndSpecies.map(
       (pokemonDetail) => {
         const {
