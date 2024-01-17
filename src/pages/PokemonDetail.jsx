@@ -12,7 +12,6 @@ import { useSelector, useDispatch } from "react-redux";
 
 export default function PokemonDetail() {
   const { pokemonId } = useParams();
-  const basePokemonArray = useSelector(selectBasePokemonArray);
   const dispatch = useDispatch();
 
   // By seperating currentPokemon and basePokemon, I can reduce render inconsistency
@@ -24,36 +23,29 @@ export default function PokemonDetail() {
   // pokemonArray is for ordinary list filtered is for when a search is done
   const pokemonArray = useSelector(selectPokemonArray);
   const filteredPokemonArray = useSelector(selectFilteredPokemonArray);
-  const finalPokemon =
+  const basePokemonArray = useSelector(selectBasePokemonArray);
+
+  const initialPokemon =
     filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
 
   // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
   let fetchPokemonBaseInfo = () => {
-    dispatch(
-      fetchPokemonBase(
-        filteredPokemonArray.length > 0
-          ? filteredPokemonArray[pokemonId - 1]
-          : pokemonArray[pokemonId - 1]
-      )
+    setCurrentPokemon(
+      filteredPokemonArray.length > 0
+        ? filteredPokemonArray[pokemonId - 1]
+        : pokemonArray[pokemonId - 1]
     );
   };
   let temporarySpeciesFetchList;
   let temporaryCombinedDetailAndSpecies;
   let detailedPokemonList;
-  // If finalPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
+  // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
   // (this would mean that the user has navigated through link on list)
-  if (finalPokemon.length === 0) {
+  if (initialPokemon.length === 0) {
     fetchPokemonBaseInfo = () => {
       dispatch(fetchPokemonBase(Number(pokemonId)));
     };
-
-    // fetchPokemonBase = async () => {
-    //   const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonId}`);
-    //   const data = await res.json();
-
-    //   setBasePokemon(data);
-    // };
 
     temporarySpeciesFetchList = async () => {
       const res = await fetch(basePokemonArray.species.url);
@@ -143,8 +135,13 @@ export default function PokemonDetail() {
   }, []);
 
   useEffect(() => {
+    console.log(basePokemonArray);
     // Make sure currentPokemon isn't empty, or else will give error when accessing currentPokemon.species.url
-    if (basePokemonArray !== "" && fetchFlag === true) {
+    if (
+      basePokemonArray !== "" &&
+      fetchFlag === true &&
+      initialPokemon.length === 0
+    ) {
       const fetchData = async () => {
         setCurrentPokemon(await detailedPokemonList());
       };

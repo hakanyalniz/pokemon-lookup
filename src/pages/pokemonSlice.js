@@ -42,14 +42,15 @@ export const fetchPokemonBase = (customData) => {
         dispatch(setBasePokemonArray(data));
       } else if (customData) {
         dispatch(setBasePokemonArray(customData));
+      } else {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
+        const data = await res.json();
+
+        const basePokemonDetail = data.results;
+        dispatch(setBasePokemonArray(basePokemonDetail));
       }
 
       // make an async call in the thunk
-      const res = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=1500`);
-      const data = await res.json();
-
-      const basePokemonDetail = data.results;
-      dispatch(setBasePokemonArray(basePokemonDetail));
     } catch (err) {
       console.log(err);
     }
