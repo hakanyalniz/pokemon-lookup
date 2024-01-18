@@ -42,6 +42,7 @@ export default function PokemonDetail() {
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
   // (this would mean that the user has navigated through link on list)
+  // There are other functions that are also needed, such as fetching species details and so on
   if (initialPokemon.length === 0) {
     fetchPokemonBaseInfo = () => {
       dispatch(fetchPokemonBase(Number(pokemonId)));
@@ -108,6 +109,8 @@ export default function PokemonDetail() {
         growth_rate,
         habitat,
         hatch_counter,
+        selected_flavor_text,
+        selectedGenus,
       } = await temporaryCombinedDetailAndSpecies();
 
       return [
@@ -125,6 +128,8 @@ export default function PokemonDetail() {
         { growth_rate },
         { habitat },
         { hatch_counter },
+        { selected_flavor_text },
+        { selectedGenus },
       ];
     };
   }
@@ -135,8 +140,8 @@ export default function PokemonDetail() {
   }, []);
 
   useEffect(() => {
-    console.log(basePokemonArray);
     // Make sure currentPokemon isn't empty, or else will give error when accessing currentPokemon.species.url
+    // Fetch flag is used so that the below condition only works after fetchPokemonBaseInfo has been called
     if (
       basePokemonArray !== "" &&
       fetchFlag === true &&
@@ -156,7 +161,7 @@ export default function PokemonDetail() {
       {/* The below is required or else the currentPokemon will not have been set and therefore will be undefined */}
       {Object.keys(currentPokemon).length > 0 ? (
         <div className="main-body grid-row">
-          {console.log("currentPokemon", currentPokemon)}
+          {console.log(currentPokemon)}
           <img
             src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
             alt={currentPokemon.name}

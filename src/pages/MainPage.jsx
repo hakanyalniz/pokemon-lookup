@@ -107,7 +107,6 @@ export default function MainPage() {
         return finalData;
       })
     );
-
     // Combines temp detailed list and temp species list
     const temporaryCombinedDetailAndSpecies = temporaryDetailedPokemonList.map(
       (element, index) => {
@@ -133,6 +132,8 @@ export default function MainPage() {
           growth_rate,
           habitat,
           hatch_counter,
+          selected_flavor_text,
+          selectedGenus,
         } = pokemonDetail;
 
         return [
@@ -150,11 +151,11 @@ export default function MainPage() {
           { growth_rate },
           { habitat },
           { hatch_counter },
+          { selected_flavor_text },
+          { selectedGenus },
         ];
       }
     );
-
-    // console.log(detailedPokemonList);
 
     // Just like above, there are two situations. One, no search is done, two, search is done
     // These two situations require different handling
