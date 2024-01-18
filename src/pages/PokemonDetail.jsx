@@ -187,22 +187,16 @@ export default function PokemonDetail() {
     }
   }, [basePokemonArray]);
 
-  // useEffect(() => {
-  //   console.log(Object.keys(currentPokemon).length);
-  // }, [currentPokemon]);
-
   return (
     <>
       <TopNavBar />
-      {/* The below is required or else the currentPokemon will not have been set and therefore will be undefined */}
-      {console.log(currentPokemon)}
+      {/* The below is required or else when the currentPokemon is not set it will be undefined */}
       {Object.keys(currentPokemon).length > 0 ? (
         <>
           <button onClick={goBack} id="back-button">
             Go Back
           </button>
           <div className="main-body grid-row">
-            {/* {console.log(currentPokemon)} */}
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
               alt={currentPokemon.name}
@@ -223,3 +217,6 @@ export default function PokemonDetail() {
 }
 
 // https://pokemondb.net/pokedex/bulbasaur
+
+// When clicking back while searching, the search is reset, and takes back to base list
+// Search > Click back
