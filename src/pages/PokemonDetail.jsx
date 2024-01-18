@@ -30,10 +30,21 @@ export default function PokemonDetail() {
   const initialPokemon =
     filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
 
+  console.log(initialPokemon);
+
   // Declared beforehand, used in if condition
   let temporarySpeciesFetchList;
   let temporaryCombinedDetailAndSpecies;
   let detailedPokemonList;
+
+  useEffect(() => {
+    // The button that allows to go back, only works when using through the list
+    // Otherwise hide the button, checking initialPokemon length allows us to decide if we got here by list or URL
+    const goBackButton = document.getElementById("back-button");
+    if (goBackButton && initialPokemon.length === 0) {
+      goBackButton.style.display = "none";
+    }
+  });
 
   // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
   let fetchPokemonBaseInfo = () => {
@@ -170,7 +181,7 @@ export default function PokemonDetail() {
       {/* The below is required or else the currentPokemon will not have been set and therefore will be undefined */}
       {Object.keys(currentPokemon).length > 0 ? (
         <>
-          <button onClick={goBack} className="back-button">
+          <button onClick={goBack} id="back-button">
             Go Back
           </button>
           <div className="main-body grid-row">

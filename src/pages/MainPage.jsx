@@ -203,7 +203,13 @@ export default function MainPage() {
     // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
     dispatch(setFilteredPokemonArray(filteredArray));
 
-    dispatch(setPage(1));
+    // It seems that handleFilterChange runs when the go back button in PokemonDetail is clicked, this sets the page to 1
+    // instead of going back to the page it was previously on
+    // The below if condition checks if any search had been performed, if a search has been performed then the filteredArray
+    // would be lesser than the basePokemonArray
+    if (filteredArray.length !== basePokemonArray.length) {
+      dispatch(setPage(1));
+    }
   };
 
   // fetchPokemonDetails must run everytime filteredPokemon changes, or else the UI will not update properly when searching is involved
