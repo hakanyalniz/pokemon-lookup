@@ -18,7 +18,7 @@ export default function PokemonDetail() {
   // By seperating currentPokemon and basePokemon, I can reduce render inconsistency
   // At times, due to the changing of currentPokemon through the code, bugs popped up
   // Seperating the base and the final solves this issue
-  const [currentPokemon, setCurrentPokemon] = useState("");
+  const [currentPokemon, setCurrentPokemon] = useState({});
   const [fetchFlag, setFetchFlag] = useState(false);
 
   // pokemonArray is for ordinary list filtered is for when a search is done
@@ -29,8 +29,6 @@ export default function PokemonDetail() {
   // Required to check if user has used the list to navigate or the URL
   const initialPokemon =
     filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
-
-  console.log(initialPokemon);
 
   // Declared beforehand, used in if condition
   let temporarySpeciesFetchList;
@@ -47,10 +45,24 @@ export default function PokemonDetail() {
   });
 
   // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
+  // The pokemonId is based on the total pokemon list, if a search is done and filteredPokemon is used
+  // then obviously, a pokemon with ID of 500, can be placed on the first page and first result in the list
+  // The pokemonID is also used to search the arrays as index number, when the array is filtered
+  // the pokemonID becomes useless, since the index numbers change
+  // The below finds the pokemon by ID instead of using the ID as index
+  // It also makes sure that pokemon entries without id (the base pokemon list), doesn't get searched, or else it will give error
   let fetchPokemonBaseInfo = () => {
+    const findFilteredPokemonById = filteredPokemonArray.find((item) => {
+      if (item[1] && item[1].id) {
+        {
+          return item[1].id == pokemonId;
+        }
+      }
+    });
+
     setCurrentPokemon(
       filteredPokemonArray.length > 0
-        ? filteredPokemonArray[pokemonId - 1]
+        ? findFilteredPokemonById
         : pokemonArray[pokemonId - 1]
     );
   };
@@ -175,10 +187,15 @@ export default function PokemonDetail() {
     }
   }, [basePokemonArray]);
 
+  // useEffect(() => {
+  //   console.log(Object.keys(currentPokemon).length);
+  // }, [currentPokemon]);
+
   return (
     <>
       <TopNavBar />
       {/* The below is required or else the currentPokemon will not have been set and therefore will be undefined */}
+      {console.log(currentPokemon)}
       {Object.keys(currentPokemon).length > 0 ? (
         <>
           <button onClick={goBack} id="back-button">
