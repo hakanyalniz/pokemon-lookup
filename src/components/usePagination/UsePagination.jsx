@@ -1,12 +1,16 @@
 /* eslint-disable react/prop-types */
 import "./UsePagination.css";
+import { setPage, selectPage } from "../../pages/pokemonSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 export default function UsePagination({
-  page,
-  setPage,
+  // page,
+  // setPage,
   pageListLimit,
   pokemon,
 }) {
+  const page = useSelector(selectPage);
+  const dispatch = useDispatch();
   // event handler for page change on click
   const handlePageChange = (event, pageNumber) => {
     // Prevents the button clicks from taking the user to the top of the page
@@ -22,7 +26,7 @@ export default function UsePagination({
       pageNumber <= Math.ceil(pokemon.length / pageListLimit) &&
       pageNumber !== page
     )
-      setPage(pageNumber);
+      dispatch(setPage(pageNumber));
   };
 
   // This sands the current page number to MainPage, so that we can fetch detailed pokemon info

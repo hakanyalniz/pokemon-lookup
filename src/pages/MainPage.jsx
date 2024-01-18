@@ -7,10 +7,12 @@ import { useState, useEffect } from "react";
 import {
   setPokemonArray,
   setFilteredPokemonArray,
+  setPage,
   fetchPokemonBase,
   selectBasePokemonArray,
   selectPokemonArray,
   selectFilteredPokemonArray,
+  selectPage,
 } from "./pokemonSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -20,10 +22,11 @@ export default function MainPage() {
   const basePokemonArray = useSelector(selectBasePokemonArray);
   const pokemonArray = useSelector(selectPokemonArray);
   const filteredPokemonArray = useSelector(selectFilteredPokemonArray);
+  const page = useSelector(selectPage);
   const dispatch = useDispatch();
 
   const [fetchFlag, setFetchFlag] = useState(false);
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
 
   const pageListLimit = 10;
@@ -200,7 +203,7 @@ export default function MainPage() {
     // Setting page to 1 so that when we are on page 10, write something on searchbar, we reset back to 1 instead of staying on 10, which will give error
     dispatch(setFilteredPokemonArray(filteredArray));
 
-    setPage(1);
+    dispatch(setPage(1));
   };
 
   // fetchPokemonDetails must run everytime filteredPokemon changes, or else the UI will not update properly when searching is involved
@@ -252,8 +255,8 @@ export default function MainPage() {
           <MainList
             pokemon={finalPokemon}
             pageListLimit={pageListLimit}
-            page={page}
-            setPage={setPage}
+            // page={page}
+            // setPage={setPage}
           />
         </div>
       </div>

@@ -2,6 +2,8 @@
 import "./MainList.css";
 import { Link } from "react-router-dom";
 import UsePagination from "../usePagination/UsePagination";
+import { selectPage } from "../../pages/pokemonSlice";
+import { useSelector } from "react-redux";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
 function capitalizeFirstLetter(word) {
@@ -11,8 +13,10 @@ function capitalizeFirstLetter(word) {
 
   return firstLetterCap + remainingLetters;
 }
+// page, setPage
+export default function MainList({ pokemon, pageListLimit }) {
+  const page = useSelector(selectPage);
 
-export default function MainList({ pokemon, pageListLimit, page, setPage }) {
   // The limit to show how much item per pagination
   const emptyArray = [...Array(10)].map((_, i) => i + 1);
   const lastItemIndex =
@@ -210,8 +214,8 @@ export default function MainList({ pokemon, pageListLimit, page, setPage }) {
         <p>No Data Found</p>
       )}
       <UsePagination
-        page={page}
-        setPage={setPage}
+        // page={page}
+        // setPage={setPage}
         pageListLimit={pageListLimit}
         pokemon={pokemon}
       />

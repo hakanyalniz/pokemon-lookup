@@ -1,6 +1,6 @@
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import "./PokemonDetail.css";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   selectFilteredPokemonArray,
@@ -13,6 +13,7 @@ import { useSelector, useDispatch } from "react-redux";
 export default function PokemonDetail() {
   const { pokemonId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // By seperating currentPokemon and basePokemon, I can reduce render inconsistency
   // At times, due to the changing of currentPokemon through the code, bugs popped up
@@ -25,8 +26,14 @@ export default function PokemonDetail() {
   const filteredPokemonArray = useSelector(selectFilteredPokemonArray);
   const basePokemonArray = useSelector(selectBasePokemonArray);
 
+  // Required to check if user has used the list to navigate or the URL
   const initialPokemon =
     filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
+
+  // Declared beforehand, used in if condition
+  let temporarySpeciesFetchList;
+  let temporaryCombinedDetailAndSpecies;
+  let detailedPokemonList;
 
   // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
   let fetchPokemonBaseInfo = () => {
@@ -36,9 +43,11 @@ export default function PokemonDetail() {
         : pokemonArray[pokemonId - 1]
     );
   };
-  let temporarySpeciesFetchList;
-  let temporaryCombinedDetailAndSpecies;
-  let detailedPokemonList;
+
+  const goBack = () => {
+    navigate(-1); // This is equivalent to 'navigate('back')'
+  };
+
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
   // (this would mean that the user has navigated through link on list)
@@ -160,19 +169,24 @@ export default function PokemonDetail() {
       <TopNavBar />
       {/* The below is required or else the currentPokemon will not have been set and therefore will be undefined */}
       {Object.keys(currentPokemon).length > 0 ? (
-        <div className="main-body grid-row">
-          {console.log(currentPokemon)}
-          <img
-            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
-            alt={currentPokemon.name}
-            height={360}
-          />
-          <span className="sub-title">Pokédex data</span>
-          <div className="additionalInfo">
-            <span className="sub-title">Training</span>
-            <span className="sub-title">Breeding</span>
+        <>
+          <button onClick={goBack} className="back-button">
+            Go Back
+          </button>
+          <div className="main-body grid-row">
+            {/* {console.log(currentPokemon)} */}
+            <img
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
+              alt={currentPokemon.name}
+              height={360}
+            />
+            <span className="sub-title">Pokédex data</span>
+            <div className="additionalInfo">
+              <span className="sub-title">Training</span>
+              <span className="sub-title">Breeding</span>
+            </div>
           </div>
-        </div>
+        </>
       ) : (
         <p>Loading...</p>
       )}
