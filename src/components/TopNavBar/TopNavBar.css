@@ -37,6 +37,9 @@
 
 @media (max-width: 440px) {
   /* Selectors for table cells you want to hide */
+  .nav-bar {
+    padding-bottom: 10px;
+  }
   .nav-bar .main-title {
     font-size: 6vw;
   }

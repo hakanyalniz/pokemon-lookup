@@ -16,7 +16,7 @@
 }
 
 @media (max-width: 450px) {
-  .main-body .hide-on-450 {
+  .main-body img.hide-on-450 {
     display: none;
   }
 }

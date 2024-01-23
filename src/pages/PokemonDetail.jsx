@@ -35,14 +35,36 @@ export default function PokemonDetail() {
   let temporaryCombinedDetailAndSpecies;
   let detailedPokemonList;
 
+  // The button used to go back to main list
+  const goBackButton = document.getElementById("back-button");
+
   useEffect(() => {
     // The button that allows to go back, only works when using through the list
     // Otherwise hide the button, checking initialPokemon length allows us to decide if we got here by list or URL
-    const goBackButton = document.getElementById("back-button");
     if (goBackButton && initialPokemon.length === 0) {
       goBackButton.style.display = "none";
     }
+
+    // Letting it run once at the beginning to check the window size and adjust if needed
+    updateButtonText();
   });
+
+  // At times the goBackButton returns null, this leads to error, so check for that
+  function updateButtonText() {
+    if (window.innerWidth < 620 && goBackButton !== null) {
+      goBackButton.textContent = "<";
+    } else if (goBackButton !== null) {
+      goBackButton.textContent = "Go Back";
+    }
+
+    if (window.innerWidth < 500 && goBackButton !== null) {
+      goBackButton.style.padding = "5px";
+    } else if (goBackButton !== null) {
+      goBackButton.style.padding = "10px";
+    }
+  }
+
+  window.addEventListener("resize", updateButtonText);
 
   // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
   // The pokemonId is based on the total pokemon list, if a search is done and filteredPokemon is used instead
@@ -202,6 +224,7 @@ export default function PokemonDetail() {
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
               alt={currentPokemon.name}
               height={360}
+              id="pokemon-image"
             />
             <span className="sub-title">Pokédex data</span>
             <div className="additionalInfo">
