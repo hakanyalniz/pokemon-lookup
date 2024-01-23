@@ -6,7 +6,7 @@ import { selectPage } from "../../pages/pokemonSlice";
 import { useSelector } from "react-redux";
 
 // A simple function to capitalize the first letter of a word, used for the data given by Pokemon API
-function capitalizeFirstLetter(word) {
+export function capitalizeFirstLetter(word) {
   const firstLetter = word.charAt(0);
   const firstLetterCap = firstLetter.toUpperCase();
   const remainingLetters = word.slice(1);

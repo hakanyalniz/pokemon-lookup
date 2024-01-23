@@ -12,19 +12,22 @@
   grid-template-columns: 1fr;
 }
 
-@media (max-width: 620px) {
-  .grid-row {
-    grid-template-columns: auto 1fr;
-  }
-  .additionalInfo {
-    grid-area: 2 / 2;
-  }
-}
-
 .sub-title {
   font-size: clamp(20px, 2.8vw, 32px);
 
   font-weight: bold;
+}
+
+.pokemon-details-name {
+  font-size: clamp(25px, 2.8vw, 40px);
+  background-color: rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+
+  border-radius: 20px;
+
+  margin: 10px auto;
+  max-width: 80%;
+  text-align: center;
 }
 
 #back-button {
@@ -49,4 +52,28 @@
 
 #pokemon-image {
   height: min(40vw, 360px);
+}
+
+.pokedex-data table {
+  font-size: clamp(10px, 1.5vw, 16px);
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.pokedex-data th,
+.pokedex-data td {
+  border-bottom: 1px solid rgba(250, 250, 250, 0.1); /* Black line between rows */
+  font-weight: 400;
+  padding: 10px;
+  text-align: left;
+}
+
+/* Additional info gets put under Pokedex Data to make the page more responsive */
+@media (max-width: 995px) {
+  .grid-row {
+    grid-template-columns: auto 1fr;
+  }
+  .additionalInfo {
+    grid-area: 2 / 2;
+  }
 }

@@ -1,5 +1,6 @@
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import "./PokemonDetail.css";
+import { capitalizeFirstLetter } from "../components/MainList/MainList";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -219,14 +220,59 @@ export default function PokemonDetail() {
       {/* The below is required or else when the currentPokemon is not set it will be undefined */}
       {Object.keys(currentPokemon).length > 0 ? (
         <>
+          <div className="pokemon-details-name">
+            {capitalizeFirstLetter(currentPokemon[0].name)}
+          </div>
+
           <div className="main-body grid-row">
+            {console.log(currentPokemon)}
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
-              alt={currentPokemon.name}
+              alt={currentPokemon[0].name}
               height={360}
               id="pokemon-image"
             />
-            <span className="sub-title">Pokédex data</span>
+            <div className="pokedex-data">
+              <span className="sub-title">Pokédex data</span>
+              <table>
+                <tbody>
+                  <tr>
+                    <th>Pokemon ID</th>
+                    <td>{currentPokemon[1].id}</td>
+                  </tr>
+                  <tr>
+                    <th>Type</th>
+                    <td>
+                      {currentPokemon[2].types.map(
+                        (types) => types.type.name + "\n"
+                      )}
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>Species</th>
+                    <td>{currentPokemon[15].selectedGenus.genus}</td>
+                  </tr>
+                  <tr>
+                    <th>Height</th>
+                    <td>{currentPokemon[5].height}</td>
+                  </tr>
+                  <tr>
+                    <th>Weight</th>
+                    <td>{currentPokemon[6].weight}</td>
+                  </tr>
+                  <tr>
+                    <th>Abilities</th>
+                    <td>
+                      {currentPokemon[4].abilities.map((abilities, index) => (
+                        <a href={abilities.ability.url} key={index}>
+                          {abilities.ability.name + "\n"}{" "}
+                        </a>
+                      ))}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
             <div className="additionalInfo">
               <span className="sub-title">Training</span>
               <span className="sub-title">Breeding</span>
