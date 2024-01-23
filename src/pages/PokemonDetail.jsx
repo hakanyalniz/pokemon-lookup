@@ -45,8 +45,9 @@ export default function PokemonDetail() {
   });
 
   // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
-  // The pokemonId is based on the total pokemon list, if a search is done and filteredPokemon is used
+  // The pokemonId is based on the total pokemon list, if a search is done and filteredPokemon is used instead
   // then obviously, a pokemon with ID of 500, can be placed on the first page and first result in the list
+  // then it will try to search for the index 500, but since it is filtered, such index doesn't exist and gives error
   // The pokemonID is also used to search the arrays as index number, when the array is filtered
   // the pokemonID becomes useless, since the index numbers change
   // The below finds the pokemon by ID instead of using the ID as index
@@ -190,12 +191,12 @@ export default function PokemonDetail() {
   return (
     <>
       <TopNavBar />
+      <button onClick={goBack} id="back-button">
+        Go Back
+      </button>
       {/* The below is required or else when the currentPokemon is not set it will be undefined */}
       {Object.keys(currentPokemon).length > 0 ? (
         <>
-          <button onClick={goBack} id="back-button">
-            Go Back
-          </button>
           <div className="main-body grid-row">
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
