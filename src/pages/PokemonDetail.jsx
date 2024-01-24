@@ -95,6 +95,40 @@ export default function PokemonDetail() {
     navigate(-1); // This is equivalent to 'navigate('back')'
   };
 
+  // Some of the numbers in pokemon data are given raw without the neccessary dots and measurements placed.
+  // pokemonNumber is a number alongsode a value that gives context to that number (such as weight or height)
+  // pokemonNumber = 20 > 2.0 > 2.0 kg
+  function processPokemonNumbers(pokemonNumber) {
+    // Get the key, height or weight
+    const numberKey = Object.keys(pokemonNumber)[0];
+    let numberValue;
+    let measurement;
+    // Decide the value and measurement based on the key
+    if (numberKey === "height") {
+      numberValue = pokemonNumber.height;
+      measurement = " m";
+    } else if (numberKey === "weight") {
+      numberValue = pokemonNumber.weight;
+      measurement = " kg";
+    }
+
+    // The numberValue is an integer like 20 here, we will turn it into a string "20" then make an array out of it
+    // Then the array, which is [2, 0], is turned into [2, ".", 0], which is then turned into "2.0" through join
+    let valueToArray = String(numberValue).split("");
+
+    // If the valueToArray variable is a single number, like ["7"], then add a 0 to the beginning ["0", "7"]
+    // So that the final result will be "0.7" instead of ".7"
+    if (valueToArray.length === 1) {
+      valueToArray.unshift(0);
+    }
+
+    valueToArray.splice(valueToArray.length - 1, 0, ".");
+
+    let joinedArray = valueToArray.join("") + measurement;
+
+    return joinedArray;
+  }
+
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
   // (this would mean that the user has navigated through link on list)
@@ -225,7 +259,7 @@ export default function PokemonDetail() {
           </div>
 
           <div className="main-body grid-row">
-            {console.log(currentPokemon)}
+            {/* {console.log(currentPokemon)} */}
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
               alt={currentPokemon[0].name}
@@ -254,11 +288,11 @@ export default function PokemonDetail() {
                   </tr>
                   <tr>
                     <th>Height</th>
-                    <td>{currentPokemon[5].height}</td>
+                    <td>{processPokemonNumbers(currentPokemon[5])}</td>
                   </tr>
                   <tr>
                     <th>Weight</th>
-                    <td>{currentPokemon[6].weight}</td>
+                    <td>{processPokemonNumbers(currentPokemon[6])}</td>
                   </tr>
                   <tr>
                     <th>Abilities</th>

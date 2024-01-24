@@ -83,7 +83,9 @@ export default function MainList({ pokemon, pageListLimit }) {
                     </td>
                     <td>
                       <span className="pokemon-name">
-                        {capitalizeFirstLetter(pokemon.name)}
+                        <Link to={`/pokemon/${pokemon[1].id}`}>
+                          {capitalizeFirstLetter(pokemon.name)}
+                        </Link>
                       </span>
                     </td>
                     <td className="hide-on-350">

@@ -33,6 +33,10 @@
   list-style-type: none;
 }
 
+.pokemon-name {
+  font-weight: bold;
+}
+
 .pokemon-list-container .pokemon-cell .pokemon-TOTAL {
   font-weight: bold;
 }
