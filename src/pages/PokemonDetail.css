@@ -1,7 +1,7 @@
 .grid-row {
   display: grid;
   grid-template-columns: auto 2fr 1fr;
-  padding-top: 10px;
+  padding: 10px;
 
   gap: 30px;
 }
@@ -54,14 +54,15 @@
   height: min(40vw, 360px);
 }
 
-.pokedex-data table {
+.main-body.grid-row table {
   font-size: clamp(10px, 1.5vw, 16px);
   border-collapse: collapse;
   width: 100%;
+  margin-bottom: 10px;
 }
 
-.pokedex-data th,
-.pokedex-data td {
+.main-body.grid-row th,
+.main-body.grid-row td {
   border-bottom: 1px solid rgba(250, 250, 250, 0.1); /* Black line between rows */
   font-weight: 400;
   padding: 10px;
