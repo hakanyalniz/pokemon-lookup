@@ -28,9 +28,8 @@ export default function PokemonDetail() {
   const basePokemonArray = useSelector(selectBasePokemonArray);
 
   // Required to check if user has used the list to navigate or the URL
-  const initialPokemon =
+  let initialPokemon =
     filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
-
   // Declared beforehand, used in if condition
   let temporarySpeciesFetchList;
   let temporaryCombinedDetailAndSpecies;
@@ -67,6 +66,42 @@ export default function PokemonDetail() {
 
   window.addEventListener("resize", updateButtonText);
 
+  const findFilteredPokemonById = filteredPokemonArray.find((item) => {
+    if (item[1] && item[1].id) {
+      {
+        return item[1].id == pokemonId;
+      }
+    }
+  });
+
+  const findPokemonArrayById = pokemonArray.find((item) => {
+    if (item[1] && item[1].id) {
+      {
+        return item[1].id == pokemonId;
+      }
+    }
+  });
+
+  // Uncomment the below three to see the problem
+  // console.log("initialPokemon.length", initialPokemon.length);
+  // console.log("findFilteredPokemonById", findFilteredPokemonById);
+  // console.log("findPokemonArrayById", findPokemonArrayById);
+
+  // InitialPokemon length is not 0, so it won't fetch new base pokemon list down below
+  // and findFilteredPokemonById and findPokemonArrayById are undefined, so there is no way of getting pokemon data
+
+  // findPokemonArrayById is undefined, when it can't find anything. It can't find anything when accessed through the URL
+  // initialPokemon length is 0 when accessed through the URL, however in the edge case of clicking back and forth in the browser
+  // the initialPokemon length is pokemon base list length. The initialPokemon behaves as if accessed through Link
+  // yet findPokemonArrayById is undefined as if accessed through URL. This creates a problem.
+  // the detailed pokemon info on the pokemon array gets shifted to the first 10, so when you try to find info about the current pokemon, which is index 11 (for example)
+  // the find method skips that pokemon, because it lacks ID, as a result it becomes undefined. Later on the program it would lead to a bug. To fix this the below code is added
+  // By setting initialPokemon to an empty array, now the program will behave as if it is accessed through the URL
+  // So the below only runs when the page is accessed through back and forth button on browser
+  if (findPokemonArrayById === undefined && initialPokemon.length !== 0) {
+    initialPokemon = [];
+  }
+
   // Previously the pokemon ID had been used as index number to find the pokemon in the array
   // This had been a problem, first with filtered pokemon, because a filtered list will have different index and the id will not match
   // then with the base pokemon array, because some of the pokemon have ID that do not go in order
@@ -74,22 +109,6 @@ export default function PokemonDetail() {
   // The below finds the pokemon by ID instead of using the ID as index
   // It also makes sure that pokemon entries without id (the base pokemon list), doesn't get searched, or else it will give error
   let fetchPokemonBaseInfo = () => {
-    const findFilteredPokemonById = filteredPokemonArray.find((item) => {
-      if (item[1] && item[1].id) {
-        {
-          return item[1].id == pokemonId;
-        }
-      }
-    });
-
-    const findPokemonArrayById = pokemonArray.find((item) => {
-      if (item[1] && item[1].id) {
-        {
-          return item[1].id == pokemonId;
-        }
-      }
-    });
-
     setCurrentPokemon(
       filteredPokemonArray.length > 0
         ? findFilteredPokemonById
@@ -134,7 +153,6 @@ export default function PokemonDetail() {
 
     return joinedArray;
   }
-
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
   // (this would mean that the user has navigated through link on list)
@@ -382,5 +400,4 @@ export default function PokemonDetail() {
 
 // https://pokemondb.net/pokedex/bulbasaur
 
-// When clicking the back button on the browser itself from pokemon detail, some errors occur
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
