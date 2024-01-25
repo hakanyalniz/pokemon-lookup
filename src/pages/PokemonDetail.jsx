@@ -251,8 +251,6 @@ export default function PokemonDetail() {
     }
   }, [basePokemonArray]);
 
-  console.log("latest currentPokemon", currentPokemon);
-
   return (
     <>
       <TopNavBar />
@@ -385,5 +383,4 @@ export default function PokemonDetail() {
 // https://pokemondb.net/pokedex/bulbasaur
 
 // When clicking the back button on the browser itself from pokemon detail, some errors occur
-// When clicking on some of the pokemon that are on the later pages of the list, error occurs. This error doesn't occur when the pokemon is accessed through URL
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list

@@ -194,7 +194,11 @@ export default function MainPage() {
   }, []);
   // Only run when fetchPokemonBase is complete, or else the fetchPokemonDetails which uses PokemonBase will give error
   useEffect(() => {
-    fetchPokemonDetails();
+    // Checking if basePokemonArray is an array or not. In PokemonDetails, basePokemonArray is turned into an object at certain point
+    // so we need to make sure that, if the user came from that page, the basePokemonArray is still an array and not an object
+    if (Array.isArray(basePokemonArray)) {
+      fetchPokemonDetails();
+    }
   }, [basePokemonArray]);
 
   const handleFilterChange = (filteredArray) => {
@@ -218,7 +222,9 @@ export default function MainPage() {
   // To prevent this, a flag system is used, once fetch details is run the flag is set so it doesn't run again, unless a new search is done
   useEffect(() => {
     if (filteredPokemonArray.length > 0 && fetchFlag === false) {
-      fetchPokemonDetails();
+      if (Array.isArray(basePokemonArray)) {
+        fetchPokemonDetails();
+      }
       setFetchFlag(true);
     }
   }, [filteredPokemonArray, fetchFlag]);
@@ -226,7 +232,9 @@ export default function MainPage() {
   // Each page, call pokemonDetail to fetch more detailed data
   // This is done because detailed data is only fetched per page and not whole
   useEffect(() => {
-    fetchPokemonDetails();
+    if (Array.isArray(basePokemonArray)) {
+      fetchPokemonDetails();
+    }
   }, [page]);
 
   // The below is needed to fix the problem of:
