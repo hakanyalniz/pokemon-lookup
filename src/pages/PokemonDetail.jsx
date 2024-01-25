@@ -67,12 +67,10 @@ export default function PokemonDetail() {
 
   window.addEventListener("resize", updateButtonText);
 
-  // pokemonId is subtracted by one because the array starts at 0, the ID starts at 1
-  // The pokemonId is based on the total pokemon list, if a search is done and filteredPokemon is used instead
-  // then obviously, a pokemon with ID of 500, can be placed on the first page and first result in the list
-  // then it will try to search for the index 500, but since it is filtered, such index doesn't exist and gives error
-  // The pokemonID is also used to search the arrays as index number, when the array is filtered
-  // the pokemonID becomes useless, since the index numbers change
+  // Previously the pokemon ID had been used as index number to find the pokemon in the array
+  // This had been a problem, first with filtered pokemon, because a filtered list will have different index and the id will not match
+  // then with the base pokemon array, because some of the pokemon have ID that do not go in order
+  // In exchange, the pokemon are found by going through the pokemon list and seeing if the ID in the list is the same as pokemonID
   // The below finds the pokemon by ID instead of using the ID as index
   // It also makes sure that pokemon entries without id (the base pokemon list), doesn't get searched, or else it will give error
   let fetchPokemonBaseInfo = () => {
@@ -84,10 +82,18 @@ export default function PokemonDetail() {
       }
     });
 
+    const findPokemonArrayById = pokemonArray.find((item) => {
+      if (item[1] && item[1].id) {
+        {
+          return item[1].id == pokemonId;
+        }
+      }
+    });
+
     setCurrentPokemon(
       filteredPokemonArray.length > 0
         ? findFilteredPokemonById
-        : pokemonArray[pokemonId - 1]
+        : findPokemonArrayById
     );
   };
 
@@ -245,6 +251,8 @@ export default function PokemonDetail() {
     }
   }, [basePokemonArray]);
 
+  console.log("latest currentPokemon", currentPokemon);
+
   return (
     <>
       <TopNavBar />
@@ -376,5 +384,6 @@ export default function PokemonDetail() {
 
 // https://pokemondb.net/pokedex/bulbasaur
 
-// When clicking back while searching, the search is reset, and takes back to base list
-// Search > Click back
+// When clicking the back button on the browser itself from pokemon detail, some errors occur
+// When clicking on some of the pokemon that are on the later pages of the list, error occurs. This error doesn't occur when the pokemon is accessed through URL
+// When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
