@@ -291,6 +291,17 @@ export default function PokemonDetail() {
       // dividing the value by 2.56 gives just enough width at max value (which is 255)
       filler.style.width = value / 2.56 + "%";
 
+      if (value > 255) {
+        filler.innerHTML = "Error";
+        filler.style.backgroundColor = "transparent";
+
+        barType.appendChild(filler);
+
+        return console.error(
+          "The given value exceeded the minimum allowed value of 255."
+        );
+      }
+
       // red, orange, yellow, green
       if (removePercentageSign(filler.style.width) <= 10) {
         filler.style.backgroundColor = "#CB2100";
