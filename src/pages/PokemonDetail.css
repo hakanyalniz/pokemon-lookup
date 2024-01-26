@@ -6,16 +6,45 @@
   gap: 30px;
 }
 
-.additionalInfo {
+.grid-row .additionalInfo {
   display: grid;
   flex-direction: row;
   grid-template-columns: 1fr;
+}
+
+.grid-row .base-stats {
+  display: grid;
+
+  grid-template-columns: repeat(2, auto) 1fr;
+  grid-column: span 3;
+}
+
+.grid-row .grid-item {
+  grid-column: 1/4;
 }
 
 .sub-title {
   font-size: clamp(20px, 2.8vw, 32px);
 
   font-weight: bold;
+}
+
+.base-stats .value-bar {
+  width: 100%;
+  height: 20px;
+  background-color: transparent;
+}
+
+.filler {
+  height: 100%;
+  /* background-color: #4caf50; */
+  background-color: white;
+
+  border-radius: 5px;
+}
+
+.base-stats .bar-data {
+  width: 100%;
 }
 
 .pokemon-details-name {
@@ -66,7 +95,14 @@
   border-bottom: 1px solid rgba(250, 250, 250, 0.1); /* Black line between rows */
   font-weight: 400;
   padding: 10px;
+  text-align: right;
+}
+.main-body.grid-row td {
   text-align: left;
+}
+
+.main-body.grid-row .pokemon-TOTAL {
+  font-weight: bold;
 }
 
 /* Additional info gets put under Pokedex Data to make the page more responsive */
