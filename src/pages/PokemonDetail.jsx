@@ -1,6 +1,9 @@
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import "./PokemonDetail.css";
-import { capitalizeFirstLetter } from "../components/MainList/MainList";
+import {
+  capitalizeFirstLetter,
+  addCSSToTypes,
+} from "../components/MainList/MainList";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -370,9 +373,14 @@ export default function PokemonDetail() {
                   <tr>
                     <th>Type</th>
                     <td>
-                      {currentPokemon[2].types.map(
-                        (types) => types.type.name + "\n"
-                      )}
+                      {currentPokemon[2].types.map((types, index) => (
+                        <p
+                          className={`${addCSSToTypes(types.type.name)}`}
+                          key={index}
+                        >
+                          {types.type.name + "\n"}
+                        </p>
+                      ))}
                     </td>
                   </tr>
                   <tr>
@@ -530,4 +538,3 @@ export default function PokemonDetail() {
 
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
 // Make it so pokemon types have special css style
-// When clicking second page and trying to search, gives error sometimes

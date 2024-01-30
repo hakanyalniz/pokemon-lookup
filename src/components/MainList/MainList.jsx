@@ -13,16 +13,16 @@ export function capitalizeFirstLetter(word) {
 
   return firstLetterCap + remainingLetters;
 }
+
+export function addCSSToTypes(type) {
+  return type + "-type";
+}
 // page, setPage
 export default function MainList({ pokemon, pageListLimit }) {
   const page = useSelector(selectPage);
 
   // The limit to show how much item per pagination
   const emptyArray = [...Array(10)].map((_, i) => i + 1);
-  // const lastItemIndex =
-  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-  //     .length - 1;
-  //   First pokemon is checked to ensure that the data does not give error of null
 
   return (
     <div>
@@ -93,7 +93,12 @@ export default function MainList({ pokemon, pageListLimit }) {
                     <td className="hide-on-350">
                       <span className="pokemon-type">
                         {pokemon[2].types.map((types, index) => (
-                          <p key={index}>{types.type.name}</p>
+                          <p
+                            key={index}
+                            className={`${addCSSToTypes(types.type.name)}`}
+                          >
+                            {types.type.name}
+                          </p>
                         ))}
                       </span>
                     </td>

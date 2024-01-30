@@ -41,6 +41,110 @@
   font-weight: bold;
 }
 
+/* Pokemon types and their CSS */
+.normal-type,
+.fire-type,
+.water-type,
+.electric-type,
+.grass-type,
+.ice-type,
+.fighting-type,
+.poison-type,
+.ground-type,
+.flying-type,
+.psychic-type,
+.bug-type,
+.rock-type,
+.ghost-type,
+.dragon-type,
+.dark-type,
+.steel-type,
+.fairy-type,
+.stellar-type {
+  display: inline-block;
+  padding: 1px 10px;
+  border-bottom: 3.5px solid;
+  border-radius: 10px;
+  margin-right: 3px;
+}
+
+.normal-type {
+  background-color: #a8a878;
+  border-bottom-color: #72724d;
+}
+.fire-type {
+  background-color: #f08030;
+  border-bottom-color: #c03028;
+}
+.water-type {
+  background-color: #6890f0;
+  border-bottom-color: #233f80;
+}
+.electric-type {
+  background-color: #f8d030;
+  border-bottom-color: #a18720;
+}
+.grass-type {
+  background-color: #78c850;
+  border-bottom-color: #487731;
+}
+.ice-type {
+  background-color: #98d8d8;
+  border-bottom-color: #5e8888;
+}
+.fighting-type {
+  background-color: #c03028;
+  border-bottom-color: #701c17;
+}
+.poison-type {
+  background-color: #a040a0;
+  border-bottom-color: #5e265e;
+}
+.ground-type {
+  background-color: #e0c068;
+  border-bottom-color: #816f3d;
+}
+.flying-type {
+  background-color: #a890f0;
+  border-bottom-color: #6a5b96;
+}
+.psychic-type {
+  background-color: #f85888;
+  border-bottom-color: #8f344f;
+}
+.bug-type {
+  background-color: #a8b820;
+  border-bottom-color: #626b14;
+}
+.rock-type {
+  background-color: #b8a038;
+  border-bottom-color: #695c20;
+}
+.ghost-type {
+  background-color: #705898;
+  border-bottom-color: #3f3155;
+}
+.dragon-type {
+  background-color: #7038f8;
+  border-bottom-color: #40208b;
+}
+.dark-type {
+  background-color: #705848;
+  border-bottom-color: #382c24;
+}
+.steel-type {
+  background-color: #b8b8d0;
+  border-bottom-color: #717180;
+}
+.fairy-type {
+  background-color: #f0b6bc;
+  border-bottom-color: #866669;
+}
+.stellar-type {
+  background-color: #35ace7;
+  border-bottom-color: #1f6486;
+}
+
 @media (max-width: 600px) {
   /* Selectors for table cells you want to hide */
   .pokemon-list-container .hide-on-600 {

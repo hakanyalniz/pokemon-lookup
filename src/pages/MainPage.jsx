@@ -180,7 +180,6 @@ export default function MainPage() {
         return { ...baseItem, ...matchingDetailedInfo };
       });
     }
-    // console.log("running");
 
     if (query !== "") {
       dispatch(setFilteredPokemonArray(combinedData)); // Set filteredPokemon directly
@@ -222,11 +221,9 @@ export default function MainPage() {
   // However, if fetch details is run everytime filteredPokemon changes (therefore if a search is done) then it will enter infinite loop
   // To prevent this, a flag system is used, once fetch details is run the flag is set so it doesn't run again, unless a new search is done
   useEffect(() => {
-    // console.log("inside fetchPokemonDetails useEffect");
     if (filteredPokemonArray.length > 0 && fetchFlag === false) {
       if (Array.isArray(basePokemonArray)) {
         fetchPokemonDetails();
-        // console.log("fetchPokemonDetails is called");
       }
       setFetchFlag(true);
     }
