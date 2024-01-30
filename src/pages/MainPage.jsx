@@ -248,6 +248,11 @@ export default function MainPage() {
       filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
   }
 
+  useEffect(() => {
+    console.log("pokemonArray", pokemonArray);
+    console.log("filteredPokemonArray", filteredPokemonArray);
+  }, [pokemonArray, filteredPokemonArray]);
+
   return (
     <>
       <TopNavBar />

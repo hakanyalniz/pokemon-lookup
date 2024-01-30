@@ -67,17 +67,17 @@ export default function PokemonDetail() {
   window.addEventListener("resize", updateButtonText);
 
   const findFilteredPokemonById = filteredPokemonArray.find((item) => {
-    if (item[1] && item[1].id) {
+    if (item[1] && item[1].id && item[1].id == pokemonId) {
       {
-        return item[1].id == pokemonId;
+        return item;
       }
     }
   });
 
   const findPokemonArrayById = pokemonArray.find((item) => {
-    if (item[1] && item[1].id) {
+    if (item[1] && item[1].id && item[1].id == pokemonId) {
       {
-        return item[1].id == pokemonId;
+        return item;
       }
     }
   });
@@ -98,7 +98,12 @@ export default function PokemonDetail() {
   // the find method skips that pokemon, because it lacks ID, as a result it becomes undefined. Later on the program it would lead to a bug. To fix this the below code is added
   // By setting initialPokemon to an empty array, now the program will behave as if it is accessed through the URL
   // So the below only runs when the page is accessed through back and forth button on browser
-  if (findPokemonArrayById === undefined && initialPokemon.length !== 0) {
+  if (
+    findPokemonArrayById === undefined &&
+    findFilteredPokemonById === undefined &&
+    initialPokemon.length !== 0
+  ) {
+    // console.log("running");
     initialPokemon = [];
   }
 
@@ -525,3 +530,5 @@ export default function PokemonDetail() {
 // https://pokemondb.net/pokedex/bulbasaur
 
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
+// Make it so pokemon types have special css style
+// When clicking second page and trying to search, gives error sometimes
