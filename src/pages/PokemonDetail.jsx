@@ -103,7 +103,6 @@ export default function PokemonDetail() {
     findFilteredPokemonById === undefined &&
     initialPokemon.length !== 0
   ) {
-    // console.log("running");
     initialPokemon = [];
   }
 

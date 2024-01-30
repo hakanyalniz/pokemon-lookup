@@ -180,6 +180,7 @@ export default function MainPage() {
         return { ...baseItem, ...matchingDetailedInfo };
       });
     }
+    // console.log("running");
 
     if (query !== "") {
       dispatch(setFilteredPokemonArray(combinedData)); // Set filteredPokemon directly
@@ -221,9 +222,11 @@ export default function MainPage() {
   // However, if fetch details is run everytime filteredPokemon changes (therefore if a search is done) then it will enter infinite loop
   // To prevent this, a flag system is used, once fetch details is run the flag is set so it doesn't run again, unless a new search is done
   useEffect(() => {
+    // console.log("inside fetchPokemonDetails useEffect");
     if (filteredPokemonArray.length > 0 && fetchFlag === false) {
       if (Array.isArray(basePokemonArray)) {
         fetchPokemonDetails();
+        // console.log("fetchPokemonDetails is called");
       }
       setFetchFlag(true);
     }
@@ -240,18 +243,15 @@ export default function MainPage() {
   // The below is needed to fix the problem of:
   // when searching, instead of showing nothing when searching nonsense, it instead shows the full list
   // When the above happens, the filterArray is empty, so instead of showing the empty filterArray it instead shows the full list
+  // To disable this just switch the comment
   let finalPokemon;
-  if (query !== "" && filteredPokemonArray.length == 0) {
+  if (query !== "" && filteredPokemonArray.length === 0) {
+    // finalPokemon = pokemonArray;
     finalPokemon = filteredPokemonArray;
   } else {
     finalPokemon =
       filteredPokemonArray.length > 0 ? filteredPokemonArray : pokemonArray;
   }
-
-  useEffect(() => {
-    console.log("pokemonArray", pokemonArray);
-    console.log("filteredPokemonArray", filteredPokemonArray);
-  }, [pokemonArray, filteredPokemonArray]);
 
   return (
     <>

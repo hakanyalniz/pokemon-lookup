@@ -19,23 +19,25 @@ export default function MainList({ pokemon, pageListLimit }) {
 
   // The limit to show how much item per pagination
   const emptyArray = [...Array(10)].map((_, i) => i + 1);
-  const lastItemIndex =
-    pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
-      .length - 1;
+  // const lastItemIndex =
+  //   pokemon.slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+  //     .length - 1;
   //   First pokemon is checked to ensure that the data does not give error of null
+
   return (
     <div>
       {/* The first requirement is neccesary because for the initial cycles of updates, the pokemon array is empty
       therefore if I tried to use length on it, it would give error. The second one is there because the update for the neccessary detailed information only arrives after 3 or so cycles
       therefore this check is required.  */}
-      {/* lastItemIndex is used to look if the last item has finished loading, this is needed because the number of pokemons shown on list can change */}
+      {/* // Will return false if all of the objects in the pokemon array do not have greater length then 2
+      // If they have the neccessary pokemon details, then this will be no problem
+      // If they lack details, it is neccessary to catch the mistake here, since we will later on use the details in the program */}
       {pokemon.length > 0 ? (
-        Object.keys(
-          pokemon.slice(
-            page * pageListLimit - pageListLimit,
-            page * pageListLimit
-          )[lastItemIndex]
-        ).length > 2 ? (
+        pokemon
+          .slice(page * pageListLimit - pageListLimit, page * pageListLimit)
+          .every((ObjKey) => {
+            return Object.keys(ObjKey).length > 2;
+          }) ? (
           // The above 2 number is there to make sure that the extra detailed information is available
           // remove it if you are going to tinker around with added or removed pokemon array information
           // or else if the length changes, only loading might show
