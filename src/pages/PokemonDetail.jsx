@@ -190,6 +190,7 @@ export default function PokemonDetail() {
         growth_rate,
         habitat,
         hatch_counter,
+        evolves_from_species,
       } = newData;
 
       const finalData = {
@@ -201,7 +202,9 @@ export default function PokemonDetail() {
         growth_rate,
         habitat,
         hatch_counter,
+        evolves_from_species,
       };
+
       return finalData;
     };
 
@@ -232,6 +235,7 @@ export default function PokemonDetail() {
         hatch_counter,
         selected_flavor_text,
         selectedGenus,
+        evolves_from_species,
       } = await temporaryCombinedDetailAndSpecies();
 
       return [
@@ -251,6 +255,7 @@ export default function PokemonDetail() {
         { hatch_counter },
         { selected_flavor_text },
         { selectedGenus },
+        { evolves_from_species },
       ];
     };
   }
@@ -340,6 +345,8 @@ export default function PokemonDetail() {
       updateBar(speedBar, currentPokemon[3].stats[5].base_stat);
     }
   });
+
+  console.log("currentPokemon", currentPokemon);
 
   return (
     <>

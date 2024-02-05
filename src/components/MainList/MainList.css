@@ -41,6 +41,14 @@
   font-weight: bold;
 }
 
+.pokemon-list-container thead {
+  background-color: black;
+}
+
+.pokemon-list-container thead tr > * {
+  padding: 5px 0;
+}
+
 /* Pokemon types and their CSS */
 .normal-type,
 .fire-type,

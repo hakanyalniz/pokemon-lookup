@@ -94,6 +94,7 @@ export default function MainPage() {
           growth_rate,
           habitat,
           hatch_counter,
+          evolves_from_species,
         } = newData;
 
         const finalData = {
@@ -105,6 +106,7 @@ export default function MainPage() {
           growth_rate,
           habitat,
           hatch_counter,
+          evolves_from_species,
         };
 
         return finalData;
@@ -137,6 +139,7 @@ export default function MainPage() {
           hatch_counter,
           selected_flavor_text,
           selectedGenus,
+          evolves_from_species,
         } = pokemonDetail;
 
         return [
@@ -156,6 +159,7 @@ export default function MainPage() {
           { hatch_counter },
           { selected_flavor_text },
           { selectedGenus },
+          { evolves_from_species },
         ];
       }
     );
