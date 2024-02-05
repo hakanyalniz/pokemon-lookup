@@ -95,6 +95,7 @@ export default function MainPage() {
           habitat,
           hatch_counter,
           evolves_from_species,
+          evolution_chain,
         } = newData;
 
         const finalData = {
@@ -107,6 +108,7 @@ export default function MainPage() {
           habitat,
           hatch_counter,
           evolves_from_species,
+          evolution_chain,
         };
 
         return finalData;
@@ -140,6 +142,7 @@ export default function MainPage() {
           selected_flavor_text,
           selectedGenus,
           evolves_from_species,
+          evolution_chain,
         } = pokemonDetail;
 
         return [
@@ -160,6 +163,7 @@ export default function MainPage() {
           { selected_flavor_text },
           { selectedGenus },
           { evolves_from_species },
+          { evolution_chain },
         ];
       }
     );

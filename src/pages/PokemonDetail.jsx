@@ -160,6 +160,38 @@ export default function PokemonDetail() {
 
     return joinedArray;
   }
+
+  // A function to check whether the current pokemon has previous or next evolutions and gather them in an array
+  function processPokemonEvolution(evoltionCheck) {
+    let pokemonEvolutionURL;
+
+    if (Object.keys(evoltionCheck).length === 0) {
+      return;
+    }
+
+    // Due to a mix-up, when the user accesses the detail page through URL and when clicking through link, the pokemon object structure changes between an object
+    // that is structured like an array with index as keys and
+    // an object within an array, we need to change how we process information due to that. We achieve that by using if conditional
+    // Beyond that, we try to find the item by find method if it is an array, since it is more foolproof.
+    if (Array.isArray(evoltionCheck)) {
+      pokemonEvolutionURL = evoltionCheck.find((item) => {
+        return Object.keys(item)[0] === "evolution_chain";
+      });
+    } else {
+      // The way objects are structured is also odd and mixed up. They are structured like an array with index numbers
+      // Due to that and to keep things simple, we will use those index numbers to get what we want
+      pokemonEvolutionURL = evoltionCheck[17];
+    }
+
+    const fetchEvolutionData = async () => {
+      const res = await fetch(pokemonEvolutionURL.evolution_chain.url);
+      const newData = await res.json();
+      console.log(newData);
+    };
+
+    fetchEvolutionData();
+  }
+
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
   // (this would mean that the user has navigated through link on list)
@@ -191,6 +223,7 @@ export default function PokemonDetail() {
         habitat,
         hatch_counter,
         evolves_from_species,
+        evolution_chain,
       } = newData;
 
       const finalData = {
@@ -203,6 +236,7 @@ export default function PokemonDetail() {
         habitat,
         hatch_counter,
         evolves_from_species,
+        evolution_chain,
       };
 
       return finalData;
@@ -236,6 +270,7 @@ export default function PokemonDetail() {
         selected_flavor_text,
         selectedGenus,
         evolves_from_species,
+        evolution_chain,
       } = await temporaryCombinedDetailAndSpecies();
 
       return [
@@ -256,6 +291,7 @@ export default function PokemonDetail() {
         { selected_flavor_text },
         { selectedGenus },
         { evolves_from_species },
+        { evolution_chain },
       ];
     };
   }
@@ -346,6 +382,7 @@ export default function PokemonDetail() {
     }
   });
 
+  processPokemonEvolution(currentPokemon);
   console.log("currentPokemon", currentPokemon);
 
   return (
