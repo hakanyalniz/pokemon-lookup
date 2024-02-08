@@ -24,6 +24,8 @@ export default function PokemonDetail() {
   // Seperating the base and the final solves this issue
   const [currentPokemon, setCurrentPokemon] = useState({});
   const [fetchFlag, setFetchFlag] = useState(false);
+  const [evolutionFlag, setEvolutionFlag] = useState(true);
+  const [evolutionArray, setEvolutionArray] = useState([]);
 
   // pokemonArray is for ordinary list filtered is for when a search is done
   const pokemonArray = useSelector(selectPokemonArray);
@@ -169,6 +171,7 @@ export default function PokemonDetail() {
       return;
     }
 
+    console.log("evoltionCheck", evoltionCheck);
     // Due to a mix-up, when the user accesses the detail page through URL and when clicking through link, the pokemon object structure changes between an object
     // that is structured like an array with index as keys and
     // an object within an array, we need to change how we process information due to that. We achieve that by using if conditional
@@ -183,14 +186,68 @@ export default function PokemonDetail() {
       pokemonEvolutionURL = evoltionCheck[17];
     }
 
+    const getNestedSpeciesName = (newDataChain) => {
+      // newDataChain is newData.chain.evolves_to[0] at the beginning
+      // Each recursion adds another evolves_to[0] at the end
+      // If condition checks if there is future evolution available, if there is it goes in one nest deeper
+      // Of course not before adding the current name to the evolutionArray
+
+      const matchID = newDataChain.species.url.match(/(\d+)\/?$/);
+
+      setEvolutionArray((prevArray) => [
+        ...prevArray, // Spread the existing elements of the previous array
+        {
+          // Add a new element to the array
+          name: newDataChain.species.name,
+          id: parseInt(matchID[1]),
+        },
+      ]);
+
+      if (newDataChain.evolves_to.length > 0) {
+        getNestedSpeciesName(newDataChain.evolves_to[0]);
+      }
+    };
+
+    // pokemonEvolutionURL contains the currentPokemon evolution URL page
+    // we take the data we want from it
     const fetchEvolutionData = async () => {
       const res = await fetch(pokemonEvolutionURL.evolution_chain.url);
       const newData = await res.json();
-      console.log(newData);
+
+      // Get the id from the url, the regular expression matches one or more digits followed by
+      // an optional trailing slash at the end of a string, capturing only the digits.
+      const matchID = newData.chain.species.url.match(/(\d+)\/?$/);
+
+      setEvolutionArray((prevArray) => [
+        ...prevArray, // Spread the existing elements of the previous array
+        {
+          // Add a new element to the array
+          name: newData.chain.species.name,
+          id: parseInt(matchID[1]),
+        },
+      ]);
+
+      // If larger than 0, then there are evolution
+      if (newData.chain.evolves_to.length > 0) {
+        getNestedSpeciesName(newData.chain.evolves_to[0]);
+      }
     };
 
     fetchEvolutionData();
   }
+
+  useEffect(() => {
+    // the flag condition is needed so that processPokemonEvolution doesn't run again and again when currentPokemon changes for whatever reason
+    // Checking whether the currentPokemon is full or empty, if empty it will give error afterall
+    if (
+      (currentPokemon.length > 0 || Object.keys(currentPokemon).length > 0) &&
+      evolutionFlag === true
+    ) {
+      processPokemonEvolution(currentPokemon);
+      setEvolutionFlag(false);
+      console.log("running");
+    }
+  }, [currentPokemon]);
 
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
@@ -382,9 +439,6 @@ export default function PokemonDetail() {
     }
   });
 
-  processPokemonEvolution(currentPokemon);
-  console.log("currentPokemon", currentPokemon);
-
   return (
     <>
       <TopNavBar />
@@ -567,6 +621,15 @@ export default function PokemonDetail() {
                     </tr>
                   </tbody>
                 </table>
+              </div>
+            </div>
+            <div className="evolution-chart">
+              <span className="sub-title">Evolution Chart</span>
+              {console.log(evolutionArray)}
+              <div className="evolution-info-flex">
+                {evolutionArray.map((item, index) => {
+                  return <div key={index}>{item.name}</div>;
+                })}
               </div>
             </div>
           </div>
