@@ -6,6 +6,8 @@ import {
 } from "../components/MainList/MainList";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
+import React from "react";
+
 import {
   selectFilteredPokemonArray,
   selectPokemonArray,
@@ -624,18 +626,27 @@ export default function PokemonDetail() {
             <div className="evolution-chart">
               <span className="sub-title">Evolution Chart</span>
               <div className="evolution-info-flex">
-                {console.log(evolutionArray)}
                 {evolutionArray.map((item, index) => {
                   return (
-                    <div key={index}>
-                      <Link to={`/pokemon/${item.id}`} target="_blank">
-                        <img
-                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.id}.png`}
-                          alt={item.name}
-                        />
-                        {item.name}
-                      </Link>
-                    </div>
+                    <React.Fragment key={index}>
+                      <div>
+                        <Link to={`/pokemon/${item.id}`} target="_blank">
+                          <figure>
+                            <img
+                              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.id}.png`}
+                              alt={item.name}
+                            />
+                            <figcaption>
+                              {capitalizeFirstLetter(item.name)}
+                            </figcaption>
+                          </figure>
+                        </Link>
+                      </div>
+                      <div
+                        className="evolves-to-arrow"
+                        key={index + "arrow"}
+                      ></div>
+                    </React.Fragment>
                   );
                 })}
               </div>

@@ -12,11 +12,17 @@
   grid-template-columns: 1fr;
 }
 
+.grid-row .additionalInfo .training-data table,
+.grid-row .additionalInfo .breeding-data table,
+.grid-row .base-stat-grid table,
+.grid-row .pokedex-data table {
+  margin-top: 20px;
+}
+
 /* CSS for base stats */
 
 .grid-row .base-stats {
   display: grid;
-
   grid-template-columns: repeat(2, auto) 1fr;
   grid-column: span 3;
 }
@@ -59,13 +65,32 @@
   display: flex;
   gap: 10px;
   width: 80%;
-  margin: 0px auto;
+  margin: 20px auto;
   justify-content: space-between;
 }
 
 .grid-row .evolution-chart .evolution-info-flex img {
   height: 100px;
   width: 100px;
+}
+
+.grid-row .evolution-chart .evolution-info-flex figcaption {
+  margin: 0px auto;
+  text-align: center;
+}
+
+.grid-row .evolution-chart .evolution-info-flex .evolves-to-arrow {
+  margin: auto 0px;
+  border: solid rgb(255, 255, 255);
+  border-width: 0 3px 3px 0;
+  padding: 3px;
+
+  transform: rotate(-45deg);
+  -webkit-transform: rotate(-45deg);
+}
+
+.grid-row .evolution-chart .evolution-info-flex > *:last-child {
+  display: none;
 }
 
 .pokemon-details-name {
