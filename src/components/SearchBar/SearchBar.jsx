@@ -20,13 +20,13 @@ export default function SearchBar({
     if (e) {
       e.preventDefault();
     }
-
+    console.log(query);
     // Pokemon is an array of objects
     const filteredArray = pokemonArray.filter((pokemonObject) => {
       if (query === "") {
         return pokemonObject;
       } else if (
-        pokemonObject.name.toLowerCase().includes(query.toLowerCase())
+        pokemonObject.name.toLowerCase().includes(query.toLowerCase().trim())
       ) {
         // pokemonObject.name accesses the name in the object, toLowerCase method lowers it incase it is higher cased,
         // then we see if that matches our query
