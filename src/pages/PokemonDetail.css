@@ -12,6 +12,8 @@
   grid-template-columns: 1fr;
 }
 
+/* CSS for base stats */
+
 .grid-row .base-stats {
   display: grid;
 
@@ -19,7 +21,7 @@
   grid-column: span 3;
 }
 
-.grid-row .grid-item {
+.grid-row .base-stat-grid {
   grid-column: 1/4;
 }
 
@@ -45,6 +47,25 @@
 
 .base-stats .bar-data {
   width: 100%;
+}
+
+/* CSS for evolution cart */
+
+.evolution-chart {
+  grid-column: 1/4;
+}
+
+.evolution-info-flex {
+  display: flex;
+  gap: 10px;
+  width: 80%;
+  margin: 0px auto;
+  justify-content: space-between;
+}
+
+.grid-row .evolution-chart .evolution-info-flex img {
+  height: 100px;
+  width: 100px;
 }
 
 .pokemon-details-name {

@@ -4,7 +4,7 @@ import {
   capitalizeFirstLetter,
   addCSSToTypes,
 } from "../components/MainList/MainList";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
   selectFilteredPokemonArray,
@@ -171,7 +171,6 @@ export default function PokemonDetail() {
       return;
     }
 
-    console.log("evoltionCheck", evoltionCheck);
     // Due to a mix-up, when the user accesses the detail page through URL and when clicking through link, the pokemon object structure changes between an object
     // that is structured like an array with index as keys and
     // an object within an array, we need to change how we process information due to that. We achieve that by using if conditional
@@ -245,7 +244,6 @@ export default function PokemonDetail() {
     ) {
       processPokemonEvolution(currentPokemon);
       setEvolutionFlag(false);
-      console.log("running");
     }
   }, [currentPokemon]);
 
@@ -565,7 +563,7 @@ export default function PokemonDetail() {
               </div>
             </div>
             <div className="base-stats">
-              <div className="grid-item">
+              <div className="base-stat-grid">
                 <span className="sub-title">Base Stats</span>
                 <table>
                   <tbody>
@@ -625,10 +623,20 @@ export default function PokemonDetail() {
             </div>
             <div className="evolution-chart">
               <span className="sub-title">Evolution Chart</span>
-              {console.log(evolutionArray)}
               <div className="evolution-info-flex">
+                {console.log(evolutionArray)}
                 {evolutionArray.map((item, index) => {
-                  return <div key={index}>{item.name}</div>;
+                  return (
+                    <div key={index}>
+                      <Link to={`/pokemon/${item.id}`} target="_blank">
+                        <img
+                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.id}.png`}
+                          alt={item.name}
+                        />
+                        {item.name}
+                      </Link>
+                    </div>
+                  );
                 })}
               </div>
             </div>
@@ -644,4 +652,3 @@ export default function PokemonDetail() {
 // https://pokemondb.net/pokedex/bulbasaur
 
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
-// Make it so pokemon types have special css style
