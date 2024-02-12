@@ -165,6 +165,7 @@ export default function PokemonDetail() {
     return joinedArray;
   }
 
+  let tempEvoArray = [];
   // A function to check whether the current pokemon has previous or next evolutions and gather them in an array
   function processPokemonEvolution(evoltionCheck) {
     let pokemonEvolutionURL;
@@ -187,25 +188,43 @@ export default function PokemonDetail() {
       pokemonEvolutionURL = evoltionCheck[17];
     }
 
-    const getNestedSpeciesName = (newDataChain) => {
-      // newDataChain is newData.chain.evolves_to[0] at the beginning
+    const getNestedSpeciesName = (newDataChain, index = 0) => {
+      // Index is there to be used when the default evolves_to[0] is not 0, but some other number
+      // It is some other number when there are branching evolutions
+
+      // newDataChain is newData.chain at the beginning
       // Each recursion adds another evolves_to[0] at the end
       // If condition checks if there is future evolution available, if there is it goes in one nest deeper
       // Of course not before adding the current name to the evolutionArray
 
+      // Get the id from the url, the regular expression matches one or more digits followed by
+      // an optional trailing slash at the end of a string, capturing only the digits.
       const matchID = newDataChain.species.url.match(/(\d+)\/?$/);
 
-      setEvolutionArray((prevArray) => [
-        ...prevArray, // Spread the existing elements of the previous array
-        {
-          // Add a new element to the array
-          name: newDataChain.species.name,
-          id: parseInt(matchID[1]),
-        },
-      ]);
+      // console.log(newDataChain);
+
+      // setEvolutionArray((prevArray) => [
+      //   ...prevArray, // Spread the existing elements of the previous array
+      //   {
+      //     // Add a new element to the array
+      //     name: newDataChain.species.name,
+      //     id: parseInt(matchID[1]),
+      //   },
+      // ]);
+
+      // The current branch of evolution will be added to this temporary array
+      // Such as [{"name": "eevee","id": 133},{"name": "vaporeon","id": 134}]
+      // It will then be reset at the for conditional, but before that the temp array will be assigned
+      // To a permanent state array. This is done so that each branch will be in an array of it's own
+      // Like so: [[{Branch 1 Evolution 1},{Branch 1 Evolution 2}], [{Branch 2 Evolution 1}, {Branch 2 Evolution 2}]]
+      tempEvoArray.push({
+        // Add a new element to the array
+        name: newDataChain.species.name,
+        id: parseInt(matchID[1]),
+      });
 
       if (newDataChain.evolves_to.length > 0) {
-        getNestedSpeciesName(newDataChain.evolves_to[0]);
+        getNestedSpeciesName(newDataChain.evolves_to[index]);
       }
     };
 
@@ -215,21 +234,32 @@ export default function PokemonDetail() {
       const res = await fetch(pokemonEvolutionURL.evolution_chain.url);
       const newData = await res.json();
 
-      // Get the id from the url, the regular expression matches one or more digits followed by
-      // an optional trailing slash at the end of a string, capturing only the digits.
-      console.log(newData);
+      // console.log("newData", newData.chain);
+
+      // if (newData.chain.evolves_to.length > 0) {
+      //   getNestedSpeciesName(newData.chain);
+      // }
 
       // If larger than 0, then there are evolution
       if (newData.chain.evolves_to.length > 0) {
-        getNestedSpeciesName(newData.chain);
-      }
-      console.log(newData.chain.evolves_to);
+        for (let index = 0; index < newData.chain.evolves_to.length; index++) {
+          getNestedSpeciesName(newData.chain, index);
 
-      // if (newData.chain.evolves_to.length > 0) {
-      //   newData.chain.evolves_to.map((item, index) => {
-      //     getNestedSpeciesName(newData.chain.evolves_to[index]);
-      //   });
-      // }
+          // Create a copy of tempEvoArray before clearing it
+          const newArrayToSet = [...tempEvoArray];
+          // Clear tempEvoArray
+          tempEvoArray = [];
+
+          console.log("tempEvoArray", tempEvoArray);
+          setEvolutionArray((prevArray) => [
+            ...prevArray, // Spread the existing elements of the previous array
+            newArrayToSet,
+          ]);
+        }
+        // newData.chain.evolves_to.map((item, index) => {
+        //   getNestedSpeciesName(item, index);
+        // });
+      }
     };
 
     fetchEvolutionData();
@@ -626,25 +656,34 @@ export default function PokemonDetail() {
                 {console.log(evolutionArray)}
                 {evolutionArray.map((item, index) => {
                   return (
-                    <React.Fragment key={index}>
-                      <div>
-                        <Link to={`/pokemon/${item.id}`} target="_blank">
-                          <figure>
-                            <img
-                              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${item.id}.png`}
-                              alt={item.name}
-                            />
-                            <figcaption>
-                              {capitalizeFirstLetter(item.name)}
-                            </figcaption>
-                          </figure>
-                        </Link>
-                      </div>
-                      <div
-                        className="evolves-to-arrow"
-                        key={index + "arrow"}
-                      ></div>
-                    </React.Fragment>
+                    <div key={index}>
+                      {item.map((nestedItem, nestedIndex) => {
+                        return (
+                          <React.Fragment key={nestedIndex}>
+                            <div>
+                              <Link
+                                to={`/pokemon/${nestedItem.id}`}
+                                target="_blank"
+                              >
+                                <figure>
+                                  <img
+                                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${nestedItem.id}.png`}
+                                    alt={nestedItem.name}
+                                  />
+                                  <figcaption>
+                                    {capitalizeFirstLetter(nestedItem.name)}
+                                  </figcaption>
+                                </figure>
+                              </Link>
+                            </div>
+                            <div
+                              className="evolves-to-arrow"
+                              key={nestedIndex + "arrow"}
+                            ></div>
+                          </React.Fragment>
+                        );
+                      })}
+                    </div>
                   );
                 })}
               </div>

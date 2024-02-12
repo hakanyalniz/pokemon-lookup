@@ -63,10 +63,21 @@
 
 .evolution-info-flex {
   display: flex;
+  flex-direction: column;
   gap: 10px;
   width: 80%;
   margin: 20px auto;
   justify-content: space-between;
+}
+
+.evolution-info-flex div {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Inline block is needed so the div do not span the whole row */
+.evolution-info-flex div > div {
+  display: inline-block;
 }
 
 .grid-row .evolution-chart .evolution-info-flex img {
@@ -89,7 +100,7 @@
   -webkit-transform: rotate(-45deg);
 }
 
-.grid-row .evolution-chart .evolution-info-flex > *:last-child {
+.grid-row .evolution-chart .evolution-info-flex > div > *:last-child {
   display: none;
 }
 
