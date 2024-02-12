@@ -222,7 +222,11 @@ export default function PokemonDetail() {
         name: newDataChain.species.name,
         id: parseInt(matchID[1]),
       });
+      // console.log("newDataChain.evolves_to[index]", newDataChain.evolves_to);
 
+      for (let i = 0; i < newDataChain.evolves_to.length; i++) {
+        console.log("newDataChain.evolves_to[i]", newDataChain.evolves_to[i]);
+      }
       if (newDataChain.evolves_to.length > 0) {
         getNestedSpeciesName(newDataChain.evolves_to[index]);
       }
@@ -234,11 +238,7 @@ export default function PokemonDetail() {
       const res = await fetch(pokemonEvolutionURL.evolution_chain.url);
       const newData = await res.json();
 
-      // console.log("newData", newData.chain);
-
-      // if (newData.chain.evolves_to.length > 0) {
-      //   getNestedSpeciesName(newData.chain);
-      // }
+      console.log("newData", newData.chain);
 
       // If larger than 0, then there are evolution
       if (newData.chain.evolves_to.length > 0) {
@@ -250,15 +250,11 @@ export default function PokemonDetail() {
           // Clear tempEvoArray
           tempEvoArray = [];
 
-          console.log("tempEvoArray", tempEvoArray);
           setEvolutionArray((prevArray) => [
             ...prevArray, // Spread the existing elements of the previous array
             newArrayToSet,
           ]);
         }
-        // newData.chain.evolves_to.map((item, index) => {
-        //   getNestedSpeciesName(item, index);
-        // });
       }
     };
 
