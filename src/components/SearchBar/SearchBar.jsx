@@ -20,7 +20,7 @@ export default function SearchBar({
     if (e) {
       e.preventDefault();
     }
-    console.log(query);
+
     // Pokemon is an array of objects
     const filteredArray = pokemonArray.filter((pokemonObject) => {
       if (query === "") {

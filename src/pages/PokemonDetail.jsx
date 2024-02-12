@@ -217,21 +217,19 @@ export default function PokemonDetail() {
 
       // Get the id from the url, the regular expression matches one or more digits followed by
       // an optional trailing slash at the end of a string, capturing only the digits.
-      const matchID = newData.chain.species.url.match(/(\d+)\/?$/);
-
-      setEvolutionArray((prevArray) => [
-        ...prevArray, // Spread the existing elements of the previous array
-        {
-          // Add a new element to the array
-          name: newData.chain.species.name,
-          id: parseInt(matchID[1]),
-        },
-      ]);
+      console.log(newData);
 
       // If larger than 0, then there are evolution
       if (newData.chain.evolves_to.length > 0) {
-        getNestedSpeciesName(newData.chain.evolves_to[0]);
+        getNestedSpeciesName(newData.chain);
       }
+      console.log(newData.chain.evolves_to);
+
+      // if (newData.chain.evolves_to.length > 0) {
+      //   newData.chain.evolves_to.map((item, index) => {
+      //     getNestedSpeciesName(newData.chain.evolves_to[index]);
+      //   });
+      // }
     };
 
     fetchEvolutionData();
@@ -453,7 +451,6 @@ export default function PokemonDetail() {
           </div>
 
           <div className="main-body grid-row">
-            {/* {console.log(currentPokemon)} */}
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
               alt={currentPokemon[0].name}
@@ -626,6 +623,7 @@ export default function PokemonDetail() {
             <div className="evolution-chart">
               <span className="sub-title">Evolution Chart</span>
               <div className="evolution-info-flex">
+                {console.log(evolutionArray)}
                 {evolutionArray.map((item, index) => {
                   return (
                     <React.Fragment key={index}>
@@ -663,3 +661,5 @@ export default function PokemonDetail() {
 // https://pokemondb.net/pokedex/bulbasaur
 
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
+// The evolution chart does not display the correct evolution path, if the pokemon has branching evolutions. One way of fixing this is to just repeat the path for each branch.
+// Check Eevee for testing
