@@ -165,7 +165,6 @@ export default function PokemonDetail() {
     return joinedArray;
   }
 
-  let tempEvoArray = [];
   // A function to check whether the current pokemon has previous or next evolutions and gather them in an array
   function processPokemonEvolution(evoltionCheck) {
     let pokemonEvolutionURL;
@@ -188,47 +187,67 @@ export default function PokemonDetail() {
       pokemonEvolutionURL = evoltionCheck[17];
     }
 
-    const getNestedSpeciesName = (newDataChain, index = 0) => {
-      // Index is there to be used when the default evolves_to[0] is not 0, but some other number
-      // It is some other number when there are branching evolutions
+    // let newTest = [];
+    // const getNestedSpeciesNameNEW = (newDataChain, prevName) => {
+    //   // newDataChain is newData.chain at the beginning
 
-      // newDataChain is newData.chain at the beginning
-      // Each recursion adds another evolves_to[0] at the end
-      // If condition checks if there is future evolution available, if there is it goes in one nest deeper
-      // Of course not before adding the current name to the evolutionArray
+    //   if (newDataChain.species) {
+    //     if (prevName) {
+    //       newTest.push([
+    //         {
+    //           name: prevName,
+    //         },
+    //         { name: newDataChain.species.name },
+    //       ]);
+    //     } else {
+    //       newTest.push({
+    //         // Add a new element to the array
+    //         name: newDataChain.species.name,
+    //       });
+    //     }
+    //   }
 
-      // Get the id from the url, the regular expression matches one or more digits followed by
-      // an optional trailing slash at the end of a string, capturing only the digits.
-      const matchID = newDataChain.species.url.match(/(\d+)\/?$/);
+    //   for (let i = 0; i < newDataChain.evolves_to.length; i++) {
+    //     if (newDataChain.evolves_to.length > 1) {
+    //       getNestedSpeciesNameNEW(
+    //         newDataChain.evolves_to[i],
+    //         newDataChain.species.name
+    //       );
+    //     } else {
+    //       getNestedSpeciesNameNEW(newDataChain.evolves_to[i]);
+    //     }
+    //   }
+    // };
 
-      // console.log(newDataChain);
+    const processEvolutionChain = (chain, result = []) => {
+      // Gets the ID of the pokemon from the URL
+      // /(\d+)\/?$/ matches one or more digits followed by an optional forward slash, but only if it occurs at the end of the string
+      const matchID = chain.species.url.match(/(\d+)\/?$/);
 
-      // setEvolutionArray((prevArray) => [
-      //   ...prevArray, // Spread the existing elements of the previous array
-      //   {
-      //     // Add a new element to the array
-      //     name: newDataChain.species.name,
-      //     id: parseInt(matchID[1]),
-      //   },
-      // ]);
-
-      // The current branch of evolution will be added to this temporary array
-      // Such as [{"name": "eevee","id": 133},{"name": "vaporeon","id": 134}]
-      // It will then be reset at the for conditional, but before that the temp array will be assigned
-      // To a permanent state array. This is done so that each branch will be in an array of it's own
-      // Like so: [[{Branch 1 Evolution 1},{Branch 1 Evolution 2}], [{Branch 2 Evolution 1}, {Branch 2 Evolution 2}]]
-      tempEvoArray.push({
-        // Add a new element to the array
-        name: newDataChain.species.name,
-        id: parseInt(matchID[1]),
-      });
-      // console.log("newDataChain.evolves_to[index]", newDataChain.evolves_to);
-
-      for (let i = 0; i < newDataChain.evolves_to.length; i++) {
-        console.log("newDataChain.evolves_to[i]", newDataChain.evolves_to[i]);
+      // This is normally not needed, since the species object will always be available, but just in case
+      // When this recursion is first called, this one pushes the first pokemon in the evolution branch
+      if (chain.species) {
+        result.push({
+          name: chain.species.name,
+          id: matchID[1],
+        });
       }
-      if (newDataChain.evolves_to.length > 0) {
-        getNestedSpeciesName(newDataChain.evolves_to[index]);
+      console.log("chain", chain);
+
+      // The below length check is needed to end the recursion, since if evolves_to length is 0
+      // Then that means we reached the end of nested object
+      if (chain.evolves_to.length === 0) {
+        return [result];
+      } else {
+        // We iterate over each evolution in chain.evolves_to using forEach. For each evolution, we recursively call processEvolutionChain with the evolution object,
+        // and a copy of the current result array using the spread operator ([...result]). This ensures that each evolution has its own copy of the accumulated results up to that point.
+        // The result of each recursive call (newResult) is then spread into the newResults array using push(...newResult).
+        const newResults = [];
+        chain.evolves_to.forEach((evolution) => {
+          const newResult = processEvolutionChain(evolution, [...result]);
+          newResults.push(...newResult);
+        });
+        return newResults;
       }
     };
 
@@ -238,24 +257,13 @@ export default function PokemonDetail() {
       const res = await fetch(pokemonEvolutionURL.evolution_chain.url);
       const newData = await res.json();
 
-      console.log("newData", newData.chain);
+      const allResults = processEvolutionChain(newData.chain);
+      console.log("allResults", allResults);
 
-      // If larger than 0, then there are evolution
-      if (newData.chain.evolves_to.length > 0) {
-        for (let index = 0; index < newData.chain.evolves_to.length; index++) {
-          getNestedSpeciesName(newData.chain, index);
-
-          // Create a copy of tempEvoArray before clearing it
-          const newArrayToSet = [...tempEvoArray];
-          // Clear tempEvoArray
-          tempEvoArray = [];
-
-          setEvolutionArray((prevArray) => [
-            ...prevArray, // Spread the existing elements of the previous array
-            newArrayToSet,
-          ]);
-        }
-      }
+      setEvolutionArray((prevArray) => [
+        ...prevArray, // Spread the existing elements of the previous array
+        ...allResults,
+      ]);
     };
 
     fetchEvolutionData();
@@ -649,7 +657,6 @@ export default function PokemonDetail() {
             <div className="evolution-chart">
               <span className="sub-title">Evolution Chart</span>
               <div className="evolution-info-flex">
-                {console.log(evolutionArray)}
                 {evolutionArray.map((item, index) => {
                   return (
                     <div key={index}>
@@ -696,5 +703,3 @@ export default function PokemonDetail() {
 // https://pokemondb.net/pokedex/bulbasaur
 
 // When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list
-// The evolution chart does not display the correct evolution path, if the pokemon has branching evolutions. One way of fixing this is to just repeat the path for each branch.
-// Check Eevee for testing
