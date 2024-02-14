@@ -55,6 +55,12 @@
   height: min(40vw, 360px);
 }
 
+.pokemon-hidden-name-image {
+  margin: auto 0px;
+  display: none;
+  height: 25px;
+}
+
 .main-body.grid-row table {
   font-size: clamp(10px, 1.5vw, 16px);
   border-collapse: collapse;
@@ -84,5 +90,28 @@
   }
   .additionalInfo {
     grid-area: 2 / 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-body.grid-row #pokemon-image {
+    display: none;
+  }
+
+  .pokemon-details-name .pokemon-hidden-name-image {
+    display: inline-block;
+  }
+
+  .additionalInfo {
+    grid-area: 1 / 2;
+  }
+}
+
+@media (max-width: 400px) {
+  .grid-row {
+    display: block;
+  }
+  .additionalInfo {
+    grid-area: 2 / 1;
   }
 }

@@ -23,9 +23,10 @@
   display: inline-block;
 }
 
-.grid-row .evolution-chart .evolution-info-flex img {
-  height: 100px;
-  width: 100px;
+.grid-row .evolution-chart .evolution-info-flex figure img {
+  /* height: 100px;
+  width: 100px; */
+  width: clamp(50px, 10vw, 100px);
 }
 
 .grid-row .evolution-chart .evolution-info-flex figcaption {

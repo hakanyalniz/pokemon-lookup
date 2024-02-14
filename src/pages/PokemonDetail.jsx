@@ -266,7 +266,19 @@ export default function PokemonDetail() {
       {Object.keys(currentPokemon).length > 0 ? (
         <>
           <div className="pokemon-details-name">
+            <img
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
+              alt={currentPokemon[0].name}
+              height={360}
+              className="pokemon-hidden-name-image"
+            />
             {capitalizeFirstLetter(currentPokemon[0].name)}
+            <img
+              src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${currentPokemon[1].id}.png`}
+              alt={currentPokemon[0].name}
+              height={360}
+              className="pokemon-hidden-name-image"
+            />
           </div>
 
           <div className="main-body grid-row">
