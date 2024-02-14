@@ -1,0 +1,5 @@
+.grid-row .additionalInfo {
+  display: grid;
+  flex-direction: row;
+  grid-template-columns: 1fr;
+}

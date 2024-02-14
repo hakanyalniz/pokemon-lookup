@@ -1,12 +1,10 @@
 import TopNavBar from "../components/TopNavBar/TopNavBar";
 import BaseStats from "../components/baseStats/BaseStats";
 import PokemonData from "../components/PokemonData/PokemonData";
+import PokemonAdditionalInfo from "../components/PokemonAdditionalInfo/PokemonAdditionalInfo";
 
 import "./PokemonDetail.css";
-import {
-  capitalizeFirstLetter,
-  addCSSToTypes,
-} from "../components/MainList/MainList";
+import { capitalizeFirstLetter } from "../components/MainList/MainList";
 import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
@@ -279,67 +277,15 @@ export default function PokemonDetail() {
               id="pokemon-image"
             />
             <div className="pokedex-data">
-              <span className="sub-title">Pokédex data</span>
               <PokemonData currentPokemon={currentPokemon} />
             </div>
             <div className="additionalInfo">
-              <div className="training-data">
-                <span className="sub-title">Training</span>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Capture Rate</th>
-                      <td>{currentPokemon[9].capture_rate}</td>
-                    </tr>
-                    <tr>
-                      <th>Base Friendship</th>
-                      <td>{currentPokemon[8].base_happiness}</td>
-                    </tr>
-                    <tr>
-                      <th>Base Exp</th>
-                      <td>{currentPokemon[7].base_experience}</td>
-                    </tr>
-                    <tr>
-                      <th>Growth Rate</th>
-                      <td>{currentPokemon[11].growth_rate.name}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="breeding-data">
-                <span className="sub-title">Breeding</span>
-                <table>
-                  <tbody>
-                    <tr>
-                      <th>Egg Groups</th>
-                      <td>
-                        {currentPokemon[10].egg_groups.map(
-                          (egg_item, index) => (
-                            <a
-                              href={egg_item.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              key={index}
-                            >
-                              {egg_item.name + "\n"}
-                            </a>
-                          )
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <th>Egg Cycles</th>
-                      <td>{currentPokemon[13].hatch_counter}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <PokemonAdditionalInfo currentPokemon={currentPokemon} />
             </div>
             <div className="base-stats">
               <BaseStats currentPokemon={currentPokemon} />
             </div>
             <div className="evolution-chart">
-              <span className="sub-title">Evolution Chart</span>
               <EvolutionChart
                 evolutionArray={evolutionArray}
                 setEvolutionArray={setEvolutionArray}

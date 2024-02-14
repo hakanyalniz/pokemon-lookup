@@ -37,50 +37,54 @@ export default function PokemonData({ currentPokemon }) {
   }
 
   return (
-    <table>
-      <tbody>
-        <tr>
-          <th>Pokemon ID</th>
-          <td>{currentPokemon[1].id}</td>
-        </tr>
-        <tr>
-          <th>Type</th>
-          <td>
-            {currentPokemon[2].types.map((types, index) => (
-              <p className={`${addCSSToTypes(types.type.name)}`} key={index}>
-                {types.type.name + "\n"}
-              </p>
-            ))}
-          </td>
-        </tr>
-        <tr>
-          <th>Species</th>
-          <td>{currentPokemon[15].selectedGenus.genus}</td>
-        </tr>
-        <tr>
-          <th>Height</th>
-          <td>{processPokemonNumbers(currentPokemon[5])}</td>
-        </tr>
-        <tr>
-          <th>Weight</th>
-          <td>{processPokemonNumbers(currentPokemon[6])}</td>
-        </tr>
-        <tr>
-          <th>Abilities</th>
-          <td>
-            {currentPokemon[4].abilities.map((abilities, index) => (
-              <a
-                href={abilities.ability.url}
-                target="_blank"
-                rel="noreferrer"
-                key={index}
-              >
-                {abilities.ability.name + "\n"}
-              </a>
-            ))}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <>
+      <span className="sub-title">Pokédex data</span>
+
+      <table>
+        <tbody>
+          <tr>
+            <th>Pokemon ID</th>
+            <td>{currentPokemon[1].id}</td>
+          </tr>
+          <tr>
+            <th>Type</th>
+            <td>
+              {currentPokemon[2].types.map((types, index) => (
+                <p className={`${addCSSToTypes(types.type.name)}`} key={index}>
+                  {types.type.name + "\n"}
+                </p>
+              ))}
+            </td>
+          </tr>
+          <tr>
+            <th>Species</th>
+            <td>{currentPokemon[15].selectedGenus.genus}</td>
+          </tr>
+          <tr>
+            <th>Height</th>
+            <td>{processPokemonNumbers(currentPokemon[5])}</td>
+          </tr>
+          <tr>
+            <th>Weight</th>
+            <td>{processPokemonNumbers(currentPokemon[6])}</td>
+          </tr>
+          <tr>
+            <th>Abilities</th>
+            <td>
+              {currentPokemon[4].abilities.map((abilities, index) => (
+                <a
+                  href={abilities.ability.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={index}
+                >
+                  {abilities.ability.name + "\n"}
+                </a>
+              ))}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </>
   );
 }

@@ -6,12 +6,6 @@
   gap: 30px;
 }
 
-.grid-row .additionalInfo {
-  display: grid;
-  flex-direction: row;
-  grid-template-columns: 1fr;
-}
-
 .grid-row .additionalInfo .training-data table,
 .grid-row .additionalInfo .breeding-data table,
 .grid-row .base-stat-grid table,

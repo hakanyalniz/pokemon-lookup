@@ -95,36 +95,40 @@ export default function EvolutionChart({
   }, [currentPokemon]);
 
   return (
-    <div className="evolution-info-flex">
-      {evolutionArray.map((item, index) => {
-        return (
-          <div key={index}>
-            {item.map((nestedItem, nestedIndex) => {
-              return (
-                <React.Fragment key={nestedIndex}>
-                  <div>
-                    <Link to={`/pokemon/${nestedItem.id}`} target="_blank">
-                      <figure>
-                        <img
-                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${nestedItem.id}.png`}
-                          alt={nestedItem.name}
-                        />
-                        <figcaption>
-                          {capitalizeFirstLetter(nestedItem.name)}
-                        </figcaption>
-                      </figure>
-                    </Link>
-                  </div>
-                  <div
-                    className="evolves-to-arrow"
-                    key={nestedIndex + "arrow"}
-                  ></div>
-                </React.Fragment>
-              );
-            })}
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <span className="sub-title">Evolution Chart</span>
+
+      <div className="evolution-info-flex">
+        {evolutionArray.map((item, index) => {
+          return (
+            <div key={index}>
+              {item.map((nestedItem, nestedIndex) => {
+                return (
+                  <React.Fragment key={nestedIndex}>
+                    <div>
+                      <Link to={`/pokemon/${nestedItem.id}`} target="_blank">
+                        <figure>
+                          <img
+                            src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${nestedItem.id}.png`}
+                            alt={nestedItem.name}
+                          />
+                          <figcaption>
+                            {capitalizeFirstLetter(nestedItem.name)}
+                          </figcaption>
+                        </figure>
+                      </Link>
+                    </div>
+                    <div
+                      className="evolves-to-arrow"
+                      key={nestedIndex + "arrow"}
+                    ></div>
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 }
