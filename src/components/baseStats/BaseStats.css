@@ -1,0 +1,29 @@
+/* CSS for base stats */
+
+.grid-row .base-stats {
+  display: grid;
+  grid-template-columns: repeat(2, auto) 1fr;
+  grid-column: span 3;
+}
+
+.grid-row .base-stat-grid {
+  grid-column: 1/4;
+}
+
+.base-stats .value-bar {
+  width: 100%;
+  height: 20px;
+  background-color: transparent;
+}
+
+.filler {
+  height: 100%;
+  /* background-color: #4caf50; */
+  background-color: white;
+
+  border-radius: 5px;
+}
+
+.base-stats .bar-data {
+  width: 100%;
+}
