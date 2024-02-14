@@ -25,35 +25,6 @@
   font-weight: bold;
 }
 
-/* Inline block is needed so the div do not span the whole row */
-.evolution-info-flex div > div {
-  display: inline-block;
-}
-
-.grid-row .evolution-chart .evolution-info-flex img {
-  height: 100px;
-  width: 100px;
-}
-
-.grid-row .evolution-chart .evolution-info-flex figcaption {
-  margin: 0px auto;
-  text-align: center;
-}
-
-.grid-row .evolution-chart .evolution-info-flex .evolves-to-arrow {
-  margin: auto 0px;
-  border: solid rgb(255, 255, 255);
-  border-width: 0 3px 3px 0;
-  padding: 3px;
-
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
-}
-
-.grid-row .evolution-chart .evolution-info-flex > div > *:last-child {
-  display: none;
-}
-
 .pokemon-details-name {
   font-size: clamp(25px, 2.8vw, 40px);
   background-color: rgba(0, 0, 0, 0.3);
