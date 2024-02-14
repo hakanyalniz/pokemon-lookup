@@ -5,9 +5,8 @@ import {
   capitalizeFirstLetter,
   addCSSToTypes,
 } from "../components/MainList/MainList";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import React from "react";
 
 import {
   selectFilteredPokemonArray,
@@ -16,6 +15,7 @@ import {
   fetchPokemonBase,
 } from "./pokemonSlice";
 import { useSelector, useDispatch } from "react-redux";
+import EvolutionChart from "../components/EvolutionChart/EvolutionChart";
 
 export default function PokemonDetail() {
   const { pokemonId } = useParams();
@@ -27,7 +27,6 @@ export default function PokemonDetail() {
   // Seperating the base and the final solves this issue
   const [currentPokemon, setCurrentPokemon] = useState({});
   const [fetchFlag, setFetchFlag] = useState(false);
-  const [evolutionFlag, setEvolutionFlag] = useState(true);
   const [evolutionArray, setEvolutionArray] = useState([]);
 
   // pokemonArray is for ordinary list filtered is for when a search is done
@@ -165,120 +164,6 @@ export default function PokemonDetail() {
 
     return joinedArray;
   }
-
-  // A function to check whether the current pokemon has previous or next evolutions and gather them in an array
-  function processPokemonEvolution(evoltionCheck) {
-    let pokemonEvolutionURL;
-
-    if (Object.keys(evoltionCheck).length === 0) {
-      return;
-    }
-
-    // Due to a mix-up, when the user accesses the detail page through URL and when clicking through link, the pokemon object structure changes between an object
-    // that is structured like an array with index as keys and
-    // an object within an array, we need to change how we process information due to that. We achieve that by using if conditional
-    // Beyond that, we try to find the item by find method if it is an array, since it is more foolproof.
-    if (Array.isArray(evoltionCheck)) {
-      pokemonEvolutionURL = evoltionCheck.find((item) => {
-        return Object.keys(item)[0] === "evolution_chain";
-      });
-    } else {
-      // The way objects are structured is also odd and mixed up. They are structured like an array with index numbers
-      // Due to that and to keep things simple, we will use those index numbers to get what we want
-      pokemonEvolutionURL = evoltionCheck[17];
-    }
-
-    // let newTest = [];
-    // const getNestedSpeciesNameNEW = (newDataChain, prevName) => {
-    //   // newDataChain is newData.chain at the beginning
-
-    //   if (newDataChain.species) {
-    //     if (prevName) {
-    //       newTest.push([
-    //         {
-    //           name: prevName,
-    //         },
-    //         { name: newDataChain.species.name },
-    //       ]);
-    //     } else {
-    //       newTest.push({
-    //         // Add a new element to the array
-    //         name: newDataChain.species.name,
-    //       });
-    //     }
-    //   }
-
-    //   for (let i = 0; i < newDataChain.evolves_to.length; i++) {
-    //     if (newDataChain.evolves_to.length > 1) {
-    //       getNestedSpeciesNameNEW(
-    //         newDataChain.evolves_to[i],
-    //         newDataChain.species.name
-    //       );
-    //     } else {
-    //       getNestedSpeciesNameNEW(newDataChain.evolves_to[i]);
-    //     }
-    //   }
-    // };
-
-    const processEvolutionChain = (chain, result = []) => {
-      // Gets the ID of the pokemon from the URL
-      // /(\d+)\/?$/ matches one or more digits followed by an optional forward slash, but only if it occurs at the end of the string
-      const matchID = chain.species.url.match(/(\d+)\/?$/);
-
-      // This is normally not needed, since the species object will always be available, but just in case
-      // When this recursion is first called, this one pushes the first pokemon in the evolution branch
-      if (chain.species) {
-        result.push({
-          name: chain.species.name,
-          id: matchID[1],
-        });
-      }
-
-      // The below length check is needed to end the recursion, since if evolves_to length is 0
-      // Then that means we reached the end of nested object
-      if (chain.evolves_to.length === 0) {
-        return [result];
-      } else {
-        // We iterate over each evolution in chain.evolves_to using forEach. For each evolution, we recursively call processEvolutionChain with the evolution object,
-        // and a copy of the current result array using the spread operator ([...result]). This ensures that each evolution has its own copy of the accumulated results up to that point.
-        // The result of each recursive call (newResult) is then spread into the newResults array using push(...newResult).
-        const newResults = [];
-        chain.evolves_to.forEach((evolution) => {
-          const newResult = processEvolutionChain(evolution, [...result]);
-          newResults.push(...newResult);
-        });
-        return newResults;
-      }
-    };
-
-    // pokemonEvolutionURL contains the currentPokemon evolution URL page
-    // we take the data we want from it
-    const fetchEvolutionData = async () => {
-      const res = await fetch(pokemonEvolutionURL.evolution_chain.url);
-      const newData = await res.json();
-
-      const allResults = processEvolutionChain(newData.chain);
-
-      setEvolutionArray((prevArray) => [
-        ...prevArray, // Spread the existing elements of the previous array
-        ...allResults,
-      ]);
-    };
-
-    fetchEvolutionData();
-  }
-
-  useEffect(() => {
-    // the flag condition is needed so that processPokemonEvolution doesn't run again and again when currentPokemon changes for whatever reason
-    // Checking whether the currentPokemon is full or empty, if empty it will give error afterall
-    if (
-      (currentPokemon.length > 0 || Object.keys(currentPokemon).length > 0) &&
-      evolutionFlag === true
-    ) {
-      processPokemonEvolution(currentPokemon);
-      setEvolutionFlag(false);
-    }
-  }, [currentPokemon]);
 
   // If initialPokemon is empty (therefore no previous data has been fetched and the user has navigated through URL)
   // then fetch new, otherwise the above assignment will hold, meaning there is previous data and no need to fetch again
@@ -534,40 +419,11 @@ export default function PokemonDetail() {
             </div>
             <div className="evolution-chart">
               <span className="sub-title">Evolution Chart</span>
-              <div className="evolution-info-flex">
-                {evolutionArray.map((item, index) => {
-                  return (
-                    <div key={index}>
-                      {item.map((nestedItem, nestedIndex) => {
-                        return (
-                          <React.Fragment key={nestedIndex}>
-                            <div>
-                              <Link
-                                to={`/pokemon/${nestedItem.id}`}
-                                target="_blank"
-                              >
-                                <figure>
-                                  <img
-                                    src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${nestedItem.id}.png`}
-                                    alt={nestedItem.name}
-                                  />
-                                  <figcaption>
-                                    {capitalizeFirstLetter(nestedItem.name)}
-                                  </figcaption>
-                                </figure>
-                              </Link>
-                            </div>
-                            <div
-                              className="evolves-to-arrow"
-                              key={nestedIndex + "arrow"}
-                            ></div>
-                          </React.Fragment>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
-              </div>
+              <EvolutionChart
+                evolutionArray={evolutionArray}
+                setEvolutionArray={setEvolutionArray}
+                currentPokemon={currentPokemon}
+              />
             </div>
           </div>
         </>

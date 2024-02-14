@@ -1,0 +1,19 @@
+/* CSS for evolution cart */
+
+.evolution-chart {
+  grid-column: 1/4;
+}
+
+.evolution-info-flex {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 80%;
+  margin: 20px auto;
+  justify-content: space-between;
+}
+
+.evolution-info-flex div {
+  display: flex;
+  justify-content: space-between;
+}
