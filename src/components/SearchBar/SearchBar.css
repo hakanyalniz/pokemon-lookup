@@ -1,4 +1,20 @@
-.search-container .search-bar {
+.search-container form {
+  display: flex;
+}
+
+.search-container #reset-search-bar {
+  align-self: flex-end;
+  height: 33px;
+  padding: 0px 6px;
+  margin-right: 5px;
+
+  background-color: black;
+
+  border: none;
+  border-radius: 5px;
+}
+
+.search-container #pokemon-search-bar {
   width: 100%;
   padding: 9px 4px 9px 30px;
   margin-top: 10px;

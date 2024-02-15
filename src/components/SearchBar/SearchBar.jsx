@@ -1,20 +1,20 @@
+/* eslint-disable react/prop-types */
 import "./SearchBar.css";
 import { useEffect } from "react";
 import {
+  setQuery,
   selectBasePokemonArray,
   selectPokemonArray,
+  selectQuery,
 } from "../../pages/pokemonSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function SearchBar({
-  // pokemon,
-  // basePokemonList,
-  query,
-  setQuery,
-  handleFilterChange,
-}) {
+export default function SearchBar({ handleFilterChange }) {
   const basePokemonArray = useSelector(selectBasePokemonArray);
   const pokemonArray = useSelector(selectPokemonArray);
+  const query = useSelector(selectQuery);
+
+  const dispatch = useDispatch();
 
   const handleSearch = (e) => {
     if (e) {
@@ -47,6 +47,12 @@ export default function SearchBar({
     }
   };
 
+  const handleClearButtonClick = () => {
+    document.getElementById("pokemon-search-bar").value = "";
+
+    dispatch(setQuery(""));
+  };
+
   // This allows the search results to appear as the user types
   useEffect(() => {
     handleSearch();
@@ -55,12 +61,15 @@ export default function SearchBar({
   return (
     <div className="search-container">
       <form onSubmit={handleSearch}>
+        <button id="reset-search-bar" onClick={handleClearButtonClick}>
+          X
+        </button>
         <input
-          className="search-bar"
+          id="pokemon-search-bar"
           type="text"
-          placeholder="Search.."
+          placeholder={query ? query : "Search.."}
           name="search"
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => dispatch(setQuery(event.target.value))}
         />
       </form>
     </div>

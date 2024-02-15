@@ -6,6 +6,7 @@ const initialState = {
   pokemonArray: [],
   filteredPokemonArray: [],
   page: 1,
+  query: "",
 };
 
 export const pokemonSlice = createSlice({
@@ -24,6 +25,9 @@ export const pokemonSlice = createSlice({
     setPage: (state, action) => {
       state.page = action.payload;
     },
+    setQuery: (state, action) => {
+      state.query = action.payload;
+    },
   },
 });
 
@@ -33,6 +37,7 @@ export const {
   setPokemonArray,
   setFilteredPokemonArray,
   setPage,
+  setQuery,
 } = pokemonSlice.actions;
 
 // Thunk for async code
@@ -71,6 +76,7 @@ export const selectPokemonArray = (state) => state.pokemon.pokemonArray;
 export const selectFilteredPokemonArray = (state) =>
   state.pokemon.filteredPokemonArray;
 export const selectPage = (state) => state.pokemon.page;
+export const selectQuery = (state) => state.pokemon.query;
 
 // Exporting reducer for store
 export default pokemonSlice.reducer;

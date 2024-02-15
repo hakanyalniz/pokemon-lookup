@@ -13,6 +13,7 @@ import {
   selectPokemonArray,
   selectFilteredPokemonArray,
   selectPage,
+  selectQuery,
 } from "./pokemonSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -23,11 +24,12 @@ export default function MainPage() {
   const pokemonArray = useSelector(selectPokemonArray);
   const filteredPokemonArray = useSelector(selectFilteredPokemonArray);
   const page = useSelector(selectPage);
+  const query = useSelector(selectQuery);
   const dispatch = useDispatch();
 
   const [fetchFlag, setFetchFlag] = useState(false);
   // const [page, setPage] = useState(1);
-  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
 
   const pageListLimit = 10;
 
@@ -268,20 +270,9 @@ export default function MainPage() {
           className="pokemon-logo hide-on-450"
         />
         <div className="search-and-list">
-          <SearchBar
-            // pokemon={pokemon}
-            // basePokemonList={basePokemonList}
-            query={query}
-            setQuery={setQuery}
-            handleFilterChange={handleFilterChange}
-          />
+          <SearchBar handleFilterChange={handleFilterChange} />
           {/* MainList gets the filteredPokemon */}
-          <MainList
-            pokemon={finalPokemon}
-            pageListLimit={pageListLimit}
-            // page={page}
-            // setPage={setPage}
-          />
+          <MainList pokemon={finalPokemon} pageListLimit={pageListLimit} />
         </div>
       </div>
     </>
