@@ -1,0 +1,21 @@
+.main-body.grid-row .pokemon-moves {
+  grid-area: 4 / 1 / 4 / 4;
+}
+
+#generation-picker {
+  background-color: rgba(0, 0, 0, 0.3);
+
+  border-radius: 20px;
+
+  margin: 10px auto;
+  padding: 10px 0;
+  max-width: 80%;
+  text-align: center;
+}
+
+.main-body.grid-row .pokemon-moves table {
+  font-size: clamp(10px, 1.5vw, 16px);
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 10px;
+}

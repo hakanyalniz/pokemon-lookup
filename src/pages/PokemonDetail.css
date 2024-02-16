@@ -19,6 +19,12 @@
   font-weight: bold;
 }
 
+.sub-sub-title {
+  font-size: clamp(18px, 2.5vw, 25px);
+
+  font-weight: bold;
+}
+
 .pokemon-details-name {
   font-size: clamp(25px, 2.8vw, 40px);
   background-color: rgba(0, 0, 0, 0.3);

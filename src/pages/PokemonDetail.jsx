@@ -211,6 +211,7 @@ export default function PokemonDetail() {
         selectedGenus,
         evolves_from_species,
         evolution_chain,
+        moves,
       } = await temporaryCombinedDetailAndSpecies();
 
       return [
@@ -232,6 +233,7 @@ export default function PokemonDetail() {
         { selectedGenus },
         { evolves_from_species },
         { evolution_chain },
+        { moves },
       ];
     };
   }
@@ -306,7 +308,7 @@ export default function PokemonDetail() {
               />
             </div>
             <div className="pokemon-moves">
-              <PokemonMoves />
+              <PokemonMoves currentPokemon={currentPokemon} />
             </div>
           </div>
         </>
@@ -316,7 +318,3 @@ export default function PokemonDetail() {
     </>
   );
 }
-
-// https://pokemondb.net/pokedex/bulbasaur
-
-// When the back button is clicked, on the pokemon detail page which is accessed through the search bar, the back button doesn't preserve the search result but goes back to main list

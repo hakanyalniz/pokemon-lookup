@@ -1,9 +1,9 @@
-import { selectBasePokemonArray } from "../../pages/pokemonSlice";
-import { useSelector } from "react-redux";
+/* eslint-disable react/prop-types */
+import "./PokemonMoves.css";
+import { useState } from "react";
 
-export default function PokemonMoves() {
-  const basePokemonArray = useSelector(selectBasePokemonArray);
-  console.log(basePokemonArray);
+export default function PokemonMoves({ currentPokemon }) {
+  const [currentGeneration, setCurrentGeneration] = useState(1);
 
   const redBluePokemonMoves = [];
   const goldSilverPokemonMoves = [];
@@ -33,7 +33,8 @@ export default function PokemonMoves() {
   // Afterwards we assign them to the arrays prepared above
   // These arrays will now house the appropriate move sorted by version
   const processAndOrganizeMoves = () => {
-    const pokemonMoves = basePokemonArray.moves;
+    const pokemonMoves = currentPokemon[18].moves;
+
     pokemonMoves.map((moveElement) => {
       moveElement.version_group_details.map((version_detail) => {
         if (
@@ -46,6 +47,8 @@ export default function PokemonMoves() {
           // then we just push to it, this saves time and space compared to the alternative of using dozen if conditions
           versionGroupMoves[version_detail.version_group.name].push({
             move: moveElement.move,
+            level: version_detail.level_learned_at,
+            method: version_detail.move_learn_method.name,
             version: version_detail.version_group,
           });
         }
@@ -54,22 +57,52 @@ export default function PokemonMoves() {
   };
 
   // Checks whether basePokemonArray is ready to process or not
-  if (
-    typeof basePokemonArray === "object" &&
-    basePokemonArray !== null &&
-    !Array.isArray(basePokemonArray)
-  ) {
+  if (currentPokemon.length > 1) {
     processAndOrganizeMoves();
   }
+
+  const handleSelectGeneration = (event) => {
+    event.stopPropagation(); // Prevent event propagation
+
+    console.log(event.target.textContent);
+  };
+
+  // const generationPicker = document.getElementById("generation-picker");
+  // if (generationPicker) {
+  //   console.log("running");
+  //   generationPicker.addEventListener("click", (event) => {
+  //     selectGeneration(event);
+  //   });
+  // }
+
+  // console.log(versionGroupMoves);
 
   return (
     <>
       <span className="sub-title">Pokemon Moves</span>
-      <div id="other-generations">
-        Other generations 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+      <div id="generation-picker" onClick={handleSelectGeneration}>
+        Other generations <span>1</span> | <span>2</span> | <span>3</span> |{" "}
+        <span>4</span> | <span>5</span> | <span>6</span> | <span>7</span> |{" "}
+        <span>8</span> | <span>9</span>
       </div>
 
-      <div></div>
+      <div>
+        <span className="sub-sub-title">Moves learnt by level up</span>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th></th>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }
