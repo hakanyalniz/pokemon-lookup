@@ -4,28 +4,20 @@ import { useEffect, useState } from "react";
 
 export default function PokemonMoves({ currentPokemon }) {
   const [currentGeneration, setCurrentGeneration] = useState(1);
-
-  const redBluePokemonMoves = [];
-  const goldSilverPokemonMoves = [];
-  const rubySapphirePokemonMoves = [];
-  const diamondPearlPokemonMoves = [];
-  const blackWhitePokemonMoves = [];
-  const xYPokemonMoves = [];
-  const sunMoonPokemonMoves = [];
-  const swordShieldPokemonMoves = [];
-  const scarletVioletPokemonMoves = [];
+  const [finalPokemonMoves, setFinalPokemonMoves] = useState([]);
+  const [pokemonFlag, setPokemonFlag] = useState(true);
 
   // Instead of using dozens of if conditions, instead we use a smart way of checking the move version name and adding them to their specific arrays
   const versionGroupMoves = {
-    "red-blue": redBluePokemonMoves,
-    "gold-silver": goldSilverPokemonMoves,
-    "ruby-sapphire": rubySapphirePokemonMoves,
-    "diamond-pearl": diamondPearlPokemonMoves,
-    "black-white": blackWhitePokemonMoves,
-    "x-y": xYPokemonMoves,
-    "sun-moon": sunMoonPokemonMoves,
-    "sword-shield": swordShieldPokemonMoves,
-    "scarlet-violet": scarletVioletPokemonMoves,
+    "red-blue": [],
+    "gold-silver": [],
+    "ruby-sapphire": [],
+    "diamond-pearl": [],
+    "black-white": [],
+    "x-y": [],
+    "sun-moon": [],
+    "sword-shield": [],
+    "scarlet-violet": [],
   };
 
   // First it fetches the moves from the larger data
@@ -34,6 +26,7 @@ export default function PokemonMoves({ currentPokemon }) {
   // These arrays will now house the appropriate move sorted by version
   const processAndOrganizeMoves = () => {
     const pokemonMoves = currentPokemon[18].moves;
+    // console.log(pokemonMoves);
 
     pokemonMoves.map((moveElement) => {
       moveElement.version_group_details.map((version_detail) => {
@@ -43,8 +36,6 @@ export default function PokemonMoves({ currentPokemon }) {
             version_detail.version_group.name
           )
         ) {
-          // if the move name is red-blue, then we get the corresponding value, which is the array we have created previously
-          // then we just push to it, this saves time and space compared to the alternative of using dozen if conditions
           versionGroupMoves[version_detail.version_group.name].push({
             move: moveElement.move,
             level: version_detail.level_learned_at,
@@ -55,14 +46,20 @@ export default function PokemonMoves({ currentPokemon }) {
       });
     });
   };
-  console.log(currentPokemon);
+
   // Checks whether basePokemonArray is ready to process or not
   // currentPokemon can be both an Array (through URL) or an Object (through link)
   // This is due to the inconsistent way the data was handled earlier in the project
   // To deal with this issue, various parts of the code need to accommodate this difference
   // that is the length of an array and object are checked down below
-  if (currentPokemon.length > 1 || Object.keys(currentPokemon).length > 1) {
+  if (
+    (currentPokemon.length > 1 || Object.keys(currentPokemon).length > 1) &&
+    pokemonFlag === true
+  ) {
+    setPokemonFlag(false);
     processAndOrganizeMoves();
+    console.log("setter run");
+    setFinalPokemonMoves(versionGroupMoves);
   }
 
   const handleSelectGeneration = (event) => {
@@ -81,8 +78,6 @@ export default function PokemonMoves({ currentPokemon }) {
     }
     event.target.style.fontWeight = "bold";
 
-    // console.log(Number(event.target.textContent));
-
     setCurrentGeneration(Number(event.target.textContent));
   };
 
@@ -100,11 +95,57 @@ export default function PokemonMoves({ currentPokemon }) {
     };
     return switchArray[currentGeneration];
   };
-  console.log(versionGroupMoves);
+  const versionGroupMatches = {
+    1: "red-blue",
+    2: "gold-silver",
+    3: "ruby-sapphire",
+    4: "diamond-pearl",
+    5: "black-white",
+    6: "x-y",
+    7: "sun-moon",
+    8: "sword-shield",
+    9: "scarlet-violet",
+  };
+  // Will fetch additional information of moves (power, type and so on) per pagination
+  // Will not fetch again if the same move can be encountered in the next generation
+  let updatedMoves = JSON.parse(JSON.stringify(finalPokemonMoves));
+
+  const fetchAdditionalMovesInfo = async (currentMoveGroup) => {
+    for (let key in currentMoveGroup) {
+      const res = await fetch(currentMoveGroup[key].move.url);
+      const newData = await res.json();
+
+      updatedMoves[versionGroupMatches[currentGeneration]][key].type =
+        newData.type.name;
+
+      // versionGroupMoves[versionGroupMatches[currentGeneration]][key].type =
+      //   newData.type.name;
+    }
+  };
 
   useEffect(() => {
-    console.log(currentGeneration);
-  }, [currentGeneration]);
+    setFinalPokemonMoves(updatedMoves);
+  }, []);
+
+  const processMovesByMethod = () => {
+    fetchAdditionalMovesInfo(
+      finalPokemonMoves[versionGroupMatches[currentGeneration]]
+    );
+
+    // versionGroupMoves contains all the moves separated by version names
+    // versionGroupMatches will use the generation number in currentGeneration to fetch the version name
+    // and return the desired generation of versionGroupMoves]
+
+    return finalPokemonMoves[versionGroupMatches[currentGeneration]];
+  };
+
+  useEffect(() => {
+    console.log("finalPokemonMoves", finalPokemonMoves);
+  }, [finalPokemonMoves]);
+
+  if (finalPokemonMoves.length === 0) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -127,10 +168,16 @@ export default function PokemonMoves({ currentPokemon }) {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th></th>
-              <td></td>
-            </tr>
+            {processMovesByMethod().map((item, index) => {
+              // console.log(item);
+              return (
+                <tr key={index}>
+                  <th>{item.level}</th>
+                  <th>{item.move.name}</th>
+                  <td></td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
