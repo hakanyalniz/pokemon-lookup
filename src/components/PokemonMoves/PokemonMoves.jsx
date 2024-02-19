@@ -88,7 +88,7 @@ export default function PokemonMoves({ currentPokemon }) {
       3: "Ruby/Sapphire, FireRed/LeafGreen and Emerald",
       4: "Diamond/Pearl, Platinum and HeartGold/SoulSilver",
       5: "Black/White and Black 2/White 2",
-      6: "X/Y and Omage Ruby/Alpha Sapphire",
+      6: "X/Y and Omega Ruby/Alpha Sapphire",
       7: "Sun/Moon, Ultra Sun/ Ultra Moon, Let's Go Pikachu/Let's Go Eevee",
       8: "Sword/Shield, Brilliant Diamond/Shining Pearl and Legends: Arceus",
       9: "Scarlet/Violet",
@@ -121,21 +121,20 @@ export default function PokemonMoves({ currentPokemon }) {
       // versionGroupMoves[versionGroupMatches[currentGeneration]][key].type =
       //   newData.type.name;
     }
+    setFinalPokemonMoves(updatedMoves);
   };
 
   useEffect(() => {
-    setFinalPokemonMoves(updatedMoves);
-  }, []);
-
-  const processMovesByMethod = () => {
     fetchAdditionalMovesInfo(
       finalPokemonMoves[versionGroupMatches[currentGeneration]]
-    );
+    );  
+  }, [currentGeneration]);
 
+
+  const processMovesByMethod = () => {
     // versionGroupMoves contains all the moves separated by version names
     // versionGroupMatches will use the generation number in currentGeneration to fetch the version name
     // and return the desired generation of versionGroupMoves]
-
     return finalPokemonMoves[versionGroupMatches[currentGeneration]];
   };
 
@@ -174,6 +173,7 @@ export default function PokemonMoves({ currentPokemon }) {
                 <tr key={index}>
                   <th>{item.level}</th>
                   <th>{item.move.name}</th>
+                  <th>{item.type}</th>
                   <td></td>
                 </tr>
               );
