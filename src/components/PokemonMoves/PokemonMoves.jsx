@@ -55,9 +55,13 @@ export default function PokemonMoves({ currentPokemon }) {
       });
     });
   };
-
+  console.log(currentPokemon);
   // Checks whether basePokemonArray is ready to process or not
-  if (currentPokemon.length > 1) {
+  // currentPokemon can be both an Array (through URL) or an Object (through link)
+  // This is due to the inconsistent way the data was handled earlier in the project
+  // To deal with this issue, various parts of the code need to accommodate this difference
+  // that is the length of an array and object are checked down below
+  if (currentPokemon.length > 1 || Object.keys(currentPokemon).length > 1) {
     processAndOrganizeMoves();
   }
 
@@ -82,8 +86,6 @@ export default function PokemonMoves({ currentPokemon }) {
     setCurrentGeneration(Number(event.target.textContent));
   };
 
-  // console.log(versionGroupMoves);
-
   const generationPickerText = () => {
     const switchArray = {
       1: "Red/Blue and Yellow",
@@ -98,40 +100,40 @@ export default function PokemonMoves({ currentPokemon }) {
     };
     return switchArray[currentGeneration];
   };
+  console.log(versionGroupMoves);
 
   useEffect(() => {
     console.log(currentGeneration);
   }, [currentGeneration]);
 
-  if (currentGeneration)
-    return (
-      <>
-        {/* Perhaps change the number spans to buttons and make them look ordinary again with CSS */}
-        <span className="sub-title">Pokemon Moves</span>
-        <div id="generation-picker" onClick={handleSelectGeneration}>
-          Other generations <span>1</span> | <span>2</span> | <span>3</span> |{" "}
-          <span>4</span> | <span>5</span> | <span>6</span> | <span>7</span> |{" "}
-          <span>8</span> | <span>9</span>
-          <div style={{ fontSize: "18px" }}>{generationPickerText()}</div>
-        </div>
+  return (
+    <>
+      {/* Perhaps change the number spans to buttons and make them look ordinary again with CSS */}
+      <span className="sub-title">Pokemon Moves</span>
+      <div id="generation-picker" onClick={handleSelectGeneration}>
+        Other generations <span>1</span> | <span>2</span> | <span>3</span> |{" "}
+        <span>4</span> | <span>5</span> | <span>6</span> | <span>7</span> |{" "}
+        <span>8</span> | <span>9</span>
+        <div style={{ fontSize: "18px" }}>{generationPickerText()}</div>
+      </div>
 
-        <div>
-          <span className="sub-sub-title">Moves learnt by level up</span>
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th></th>
-                <td></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </>
-    );
+      <div>
+        <span className="sub-sub-title">Moves learnt by level up</span>
+        <table>
+          <thead>
+            <tr>
+              <th></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th></th>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 }

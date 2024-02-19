@@ -145,6 +145,7 @@ export default function MainPage() {
           selectedGenus,
           evolves_from_species,
           evolution_chain,
+          moves,
         } = pokemonDetail;
 
         return [
@@ -166,6 +167,7 @@ export default function MainPage() {
           { selectedGenus },
           { evolves_from_species },
           { evolution_chain },
+          { moves },
         ];
       }
     );

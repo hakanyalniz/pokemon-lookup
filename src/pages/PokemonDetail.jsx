@@ -318,3 +318,8 @@ export default function PokemonDetail() {
     </>
   );
 }
+
+// Make a loading screen
+// Finish the pokemon moves
+// At times the pokemon search isnt fully efficient. The user may need to erase and retype a letter for it to register.
+// Look into it, maybe?
