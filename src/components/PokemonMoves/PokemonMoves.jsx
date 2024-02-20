@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import "./PokemonMoves.css";
+import { addCSSToTypes } from "../MainList/MainList";
 import { useEffect, useState } from "react";
 
 export default function PokemonMoves({ currentPokemon }) {
@@ -58,7 +59,6 @@ export default function PokemonMoves({ currentPokemon }) {
   ) {
     setPokemonFlag(false);
     processAndOrganizeMoves();
-    console.log("setter run");
     setFinalPokemonMoves(versionGroupMoves);
   }
 
@@ -106,20 +106,93 @@ export default function PokemonMoves({ currentPokemon }) {
     8: "sword-shield",
     9: "scarlet-violet",
   };
-  // Will fetch additional information of moves (power, type and so on) per pagination
-  // Will not fetch again if the same move can be encountered in the next generation
-  let updatedMoves = JSON.parse(JSON.stringify(finalPokemonMoves));
 
+  // the object to search, the value to use
+  function getKeyByValue(object, value) {
+    return Object.keys(object).find((key) => object[key] === value);
+  }
+
+  let updatedMoves = JSON.parse(JSON.stringify(finalPokemonMoves));
+  // Data is taken from the desired generation version group, looped over, then the data is assigned to updatedMoves
+  // then updatedMoves will be assigned to finalPokemonMoves
+  // The previous data is not lost, because updatedMoves was assigned the previous data above
+  // currentMoveGroup and updatedMoves, reference the same data, which is finalPokemonMoves
+  // This works because the order of currentMoveGroup, versionGroupMatches and updatedMoves is the same
+  // So we don't need to do additional checks
   const fetchAdditionalMovesInfo = async (currentMoveGroup) => {
     for (let key in currentMoveGroup) {
       const res = await fetch(currentMoveGroup[key].move.url);
       const newData = await res.json();
+      // newData is the additional information for that particular move
+      // console.log("newData", newData);
+      // This variable will contain all the past_value generation numbers in a particular move and will reset each for loop cycle
+      const pastValueNumbers = [];
 
       updatedMoves[versionGroupMatches[currentGeneration]][key].type =
         newData.type.name;
+      updatedMoves[versionGroupMatches[currentGeneration]][key].damage_class =
+        newData.damage_class;
 
-      // versionGroupMoves[versionGroupMatches[currentGeneration]][key].type =
-      //   newData.type.name;
+      newData.past_values.forEach((item, index) => {
+        pastValueNumbers.push([
+          getKeyByValue(versionGroupMatches, item.version_group.name),
+          index,
+        ]);
+      });
+
+      // There are two conditions, either currentGeneration is lesser than the pastValueNumbers,
+      // in which case it will use that data, or it will default to default data
+      // since the last number is the largest (we use reverse on the array), if it checks it and the current generation is bigger than that, then that means it is default
+      // We will cycle through the pastValueNumbers (exp: [5, 8]) backwards
+      // so if currentGeneration (exp: 3) is lesser than 8, it know that it is below 8,
+      // next cycle it will check 5 to see if it below 5, if true then that means currentGeneration is between 1 and 5
+      // if false it means current generation is between 5 and 8
+      let i = 0;
+      do {
+        let pastGenerationNumberItem;
+        if (pastValueNumbers.length !== 0) {
+          pastGenerationNumberItem = pastValueNumbers[i][0];
+        } else {
+          pastGenerationNumberItem = currentGeneration;
+        }
+
+        // If the currentGeneration is below past version gen number, then that means use that data
+        // there are various if conditions to check if the data is available, if not, then use the most recent default data
+        if (currentGeneration < pastGenerationNumberItem) {
+          if (newData.past_values[pastValueNumbers[i][1]].accuracy === null) {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
+              newData.accuracy;
+          } else {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
+              newData.past_values[pastValueNumbers[i][1]].accuracy;
+          }
+
+          if (newData.past_values[pastValueNumbers[i][1]].power === null) {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
+              newData.power;
+          } else {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
+              newData.past_values[pastValueNumbers[i][1]].power;
+          }
+        } else {
+          if (newData.accuracy === null) {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
+              null;
+          } else {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
+              newData.accuracy;
+          }
+
+          if (newData.power === null) {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
+              null;
+          } else {
+            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
+              newData.power;
+          }
+        }
+        i++;
+      } while (i < pastValueNumbers.length);
     }
     setFinalPokemonMoves(updatedMoves);
   };
@@ -127,9 +200,8 @@ export default function PokemonMoves({ currentPokemon }) {
   useEffect(() => {
     fetchAdditionalMovesInfo(
       finalPokemonMoves[versionGroupMatches[currentGeneration]]
-    );  
+    );
   }, [currentGeneration]);
-
 
   const processMovesByMethod = () => {
     // versionGroupMoves contains all the moves separated by version names
@@ -141,6 +213,17 @@ export default function PokemonMoves({ currentPokemon }) {
   useEffect(() => {
     console.log("finalPokemonMoves", finalPokemonMoves);
   }, [finalPokemonMoves]);
+
+  if (finalPokemonMoves[versionGroupMatches[currentGeneration]]) {
+    const lastElement =
+      finalPokemonMoves[versionGroupMatches[currentGeneration]][
+        finalPokemonMoves[versionGroupMatches[currentGeneration]].length - 1
+      ];
+
+    if (Object.keys(lastElement).length < 5) {
+      return <div>Loading...</div>;
+    }
+  }
 
   if (finalPokemonMoves.length === 0) {
     return <div>Loading...</div>;
@@ -162,8 +245,12 @@ export default function PokemonMoves({ currentPokemon }) {
         <table>
           <thead>
             <tr>
-              <th></th>
-              <th></th>
+              <th>Level</th>
+              <th>Move</th>
+              <th>Type</th>
+              <th>Category</th>
+              <th>Power</th>
+              <th>Accuracy</th>
             </tr>
           </thead>
           <tbody>
@@ -171,10 +258,14 @@ export default function PokemonMoves({ currentPokemon }) {
               // console.log(item);
               return (
                 <tr key={index}>
-                  <th>{item.level}</th>
-                  <th>{item.move.name}</th>
-                  <th>{item.type}</th>
-                  <td></td>
+                  <td>{item.level}</td>
+                  <td>{item.move.name}</td>
+                  <td>
+                    <p className={addCSSToTypes(item.type)}>{item.type}</p>
+                  </td>
+                  <td>{item.damage_class.name}</td>
+                  <td>{item.power}</td>
+                  <td>{item.accuracy}</td>
                 </tr>
               );
             })}
