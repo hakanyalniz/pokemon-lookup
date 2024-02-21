@@ -38,3 +38,17 @@
   border-right: 3px solid black;
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.main-body.grid-row .pokemon-moves table .pokemon-move-category {
+  height: 20px;
+  width: 30px;
+}
+.main-body.grid-row .pokemon-moves table td:nth-child(3),
+.main-body.grid-row .pokemon-moves table td:nth-child(4) {
+  text-align: center;
+}
+
+.main-body.grid-row .pokemon-moves table td:nth-child(5),
+.main-body.grid-row .pokemon-moves table td:nth-child(6) {
+  text-align: right;
+}

@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
 import "./PokemonMoves.css";
+import { capitalizeFirstLetter } from "../MainList/MainList";
 import { addCSSToTypes } from "../MainList/MainList";
 import { useEffect, useState } from "react";
 
@@ -216,6 +217,16 @@ export default function PokemonMoves({ currentPokemon }) {
     return isItNull === null ? "—" : isItNull;
   };
 
+  const pokemonMoveIcon = (moveCategory) => {
+    if (moveCategory === "physical") {
+      return "/icons/physical-move-category.png";
+    } else if (moveCategory === "special") {
+      return "/icons/special-move-category.png";
+    } else if (moveCategory === "status") {
+      return "/icons/status-move-category.png";
+    }
+  };
+
   useEffect(() => {
     console.log("finalPokemonMoves", finalPokemonMoves);
   }, [finalPokemonMoves]);
@@ -268,7 +279,16 @@ export default function PokemonMoves({ currentPokemon }) {
                   {/* The below three take more time to load, so precaution was taken */}
                   {item.damage_class || item.power || item.accuracy ? (
                     <>
-                      <td>{item.damage_class.name}</td>
+                      <td>
+                        <img
+                          src={pokemonMoveIcon(item.damage_class.name)}
+                          alt={`pokemon move category ${item.damage_class.name}`}
+                          title={`${capitalizeFirstLetter(
+                            item.damage_class.name
+                          )}`}
+                          className="pokemon-move-category"
+                        ></img>
+                      </td>
                       <td>{ifNullReturnTilde(item.power)}</td>
                       {console.log(item.accuracy)}
                       <td>{ifNullReturnTilde(item.accuracy)}</td>
