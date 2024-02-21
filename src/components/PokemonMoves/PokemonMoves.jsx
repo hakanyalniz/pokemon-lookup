@@ -197,6 +197,7 @@ export default function PokemonMoves({ currentPokemon }) {
     setFinalPokemonMoves(updatedMoves);
   };
 
+  // When clicking the generation picker, and therefore changing the move list, fetch the additional data for them too
   useEffect(() => {
     fetchAdditionalMovesInfo(
       finalPokemonMoves[versionGroupMatches[currentGeneration]]
@@ -206,24 +207,18 @@ export default function PokemonMoves({ currentPokemon }) {
   const processMovesByMethod = () => {
     // versionGroupMoves contains all the moves separated by version names
     // versionGroupMatches will use the generation number in currentGeneration to fetch the version name
-    // and return the desired generation of versionGroupMoves]
+    // and return the desired generation of versionGroupMoves
     return finalPokemonMoves[versionGroupMatches[currentGeneration]];
+  };
+
+  const ifNullReturnTilde = (isItNull) => {
+    // IF null, return a dash, if not just return the value back
+    return isItNull === null ? "—" : isItNull;
   };
 
   useEffect(() => {
     console.log("finalPokemonMoves", finalPokemonMoves);
   }, [finalPokemonMoves]);
-
-  if (finalPokemonMoves[versionGroupMatches[currentGeneration]]) {
-    const lastElement =
-      finalPokemonMoves[versionGroupMatches[currentGeneration]][
-        finalPokemonMoves[versionGroupMatches[currentGeneration]].length - 1
-      ];
-
-    if (Object.keys(lastElement).length < 5) {
-      return <div>Loading...</div>;
-    }
-  }
 
   if (finalPokemonMoves.length === 0) {
     return <div>Loading...</div>;
@@ -260,12 +255,31 @@ export default function PokemonMoves({ currentPokemon }) {
                 <tr key={index}>
                   <td>{item.level}</td>
                   <td>{item.move.name}</td>
-                  <td>
-                    <p className={addCSSToTypes(item.type)}>{item.type}</p>
-                  </td>
-                  <td>{item.damage_class.name}</td>
-                  <td>{item.power}</td>
-                  <td>{item.accuracy}</td>
+                  {/* It seems that only item.type can take time to load between these three */}
+                  {item.type ? (
+                    <td>
+                      <p className={addCSSToTypes(item.type)}>{item.type}</p>
+                    </td>
+                  ) : (
+                    <td>
+                      <p>Loadng...</p>
+                    </td>
+                  )}
+                  {/* The below three take more time to load, so precaution was taken */}
+                  {item.damage_class || item.power || item.accuracy ? (
+                    <>
+                      <td>{item.damage_class.name}</td>
+                      <td>{ifNullReturnTilde(item.power)}</td>
+                      {console.log(item.accuracy)}
+                      <td>{ifNullReturnTilde(item.accuracy)}</td>
+                    </>
+                  ) : (
+                    <>
+                      <td>Loading...</td>
+                      <td>Loading...</td>
+                      <td>Loading...</td>
+                    </>
+                  )}
                 </tr>
               );
             })}
