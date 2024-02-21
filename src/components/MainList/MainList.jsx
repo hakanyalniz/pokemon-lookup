@@ -80,6 +80,7 @@ export default function MainList({ pokemon, pageListLimit }) {
                         <img
                           src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon[1].id}.png`}
                           alt={pokemon.name}
+                          loading="lazy"
                         />
                       </Link>
                     </td>

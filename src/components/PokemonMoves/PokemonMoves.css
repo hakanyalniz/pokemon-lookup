@@ -44,11 +44,15 @@
   width: 30px;
 }
 .main-body.grid-row .pokemon-moves table td:nth-child(3),
-.main-body.grid-row .pokemon-moves table td:nth-child(4) {
+.main-body.grid-row .pokemon-moves table td:nth-child(4),
+.main-body.grid-row .pokemon-moves table th:nth-child(3),
+.main-body.grid-row .pokemon-moves table th:nth-child(4) {
   text-align: center;
 }
 
 .main-body.grid-row .pokemon-moves table td:nth-child(5),
-.main-body.grid-row .pokemon-moves table td:nth-child(6) {
+.main-body.grid-row .pokemon-moves table td:nth-child(6),
+.main-body.grid-row .pokemon-moves table th:nth-child(5),
+.main-body.grid-row .pokemon-moves table th:nth-child(6) {
   text-align: right;
 }

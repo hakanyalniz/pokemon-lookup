@@ -265,15 +265,17 @@ export default function PokemonMoves({ currentPokemon }) {
               return (
                 <tr key={index}>
                   <td>{item.level}</td>
-                  <td>{item.move.name}</td>
+                  <td>{capitalizeFirstLetter(item.move.name)}</td>
                   {/* It seems that only item.type can take time to load between these three */}
                   {item.type ? (
                     <td>
-                      <p className={addCSSToTypes(item.type)}>{item.type}</p>
+                      <p className={addCSSToTypes(item.type)}>
+                        {capitalizeFirstLetter(item.type)}
+                      </p>
                     </td>
                   ) : (
                     <td>
-                      <p>Loadng...</p>
+                      <p>Loading...</p>
                     </td>
                   )}
                   {/* The below three take more time to load, so precaution was taken */}
@@ -287,10 +289,10 @@ export default function PokemonMoves({ currentPokemon }) {
                             item.damage_class.name
                           )}`}
                           className="pokemon-move-category"
+                          loading="lazy"
                         ></img>
                       </td>
                       <td>{ifNullReturnTilde(item.power)}</td>
-                      {console.log(item.accuracy)}
                       <td>{ifNullReturnTilde(item.accuracy)}</td>
                     </>
                   ) : (
