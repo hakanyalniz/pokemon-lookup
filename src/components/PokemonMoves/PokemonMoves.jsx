@@ -114,6 +114,7 @@ export default function PokemonMoves({ currentPokemon }) {
   }
 
   let updatedMoves = JSON.parse(JSON.stringify(finalPokemonMoves));
+  let fetchTimeout = [];
   // Data is taken from the desired generation version group, looped over, then the data is assigned to updatedMoves
   // then updatedMoves will be assigned to finalPokemonMoves
   // The previous data is not lost, because updatedMoves was assigned the previous data above
@@ -122,10 +123,42 @@ export default function PokemonMoves({ currentPokemon }) {
   // So we don't need to do additional checks
   const fetchAdditionalMovesInfo = async (currentMoveGroup) => {
     for (let key in currentMoveGroup) {
-      const res = await fetch(currentMoveGroup[key].move.url);
-      const newData = await res.json();
+      const controller = new AbortController();
+      const signal = controller.signal;
+      let newData;
+
+      // If the fetch request doesn't complete in 100 ms, then abort the fetch
+      // Whether 100ms is good choice or not needs more testing
+      setTimeout(() => {
+        controller.abort();
+      }, 100);
+
+      try {
+        const res = await fetch(currentMoveGroup[key].move.url, { signal });
+        newData = await res.json();
+      } catch (error) {
+        if (error.name === "AbortError") {
+          fetchTimeout.push(currentMoveGroup[key].move);
+          console.error(
+            "Fetching request took too long:",
+            currentMoveGroup[key].move.url,
+            error
+          );
+          updatedMoves[versionGroupMatches[currentGeneration]][key].type =
+            "type test";
+          updatedMoves[versionGroupMatches[currentGeneration]][
+            key
+          ].damage_class = { name: "damage class test", url: "" };
+          updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
+            "accuracy test";
+          updatedMoves[versionGroupMatches[currentGeneration]][key].power =
+            "power test";
+
+          continue;
+        }
+      }
+
       // newData is the additional information for that particular move
-      // console.log("newData", newData);
       // This variable will contain all the past_value generation numbers in a particular move and will reset each for loop cycle
       const pastValueNumbers = [];
 
@@ -195,7 +228,30 @@ export default function PokemonMoves({ currentPokemon }) {
         i++;
       } while (i < pastValueNumbers.length);
     }
+    // console.log(finalPokemonMoves[versionGroupMatches[currentGeneration]]);
+    console.log(fetchTimeout);
+    if (fetchTimeout) {
+      timeoutFetchTest(fetchTimeout);
+    }
+
     setFinalPokemonMoves(updatedMoves);
+  };
+
+  const timeoutFetchTest = async (fetchTimeout) => {
+    for (let key in fetchTimeout) {
+      const res = await fetch(fetchTimeout[key].url);
+      const newData = await res.json();
+
+      // updatedMoves[versionGroupMatches[currentGeneration]].type =
+      //   newData.type.name;
+      // updatedMoves[versionGroupMatches[currentGeneration]].damage_class =
+      //   newData.damage_class;
+      // updatedMoves[versionGroupMatches[currentGeneration]].accuracy =
+      //   newData.accuracy;
+      // updatedMoves[versionGroupMatches[currentGeneration]].power =
+      //   newData.power;
+    }
+    console.log("updatedMoves", updatedMoves);
   };
 
   // When clicking the generation picker, and therefore changing the move list, fetch the additional data for them too
@@ -261,7 +317,6 @@ export default function PokemonMoves({ currentPokemon }) {
           </thead>
           <tbody>
             {processMovesByMethod().map((item, index) => {
-              // console.log(item);
               return (
                 <tr key={index}>
                   <td>{item.level}</td>
