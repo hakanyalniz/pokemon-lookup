@@ -122,6 +122,9 @@ export default function PokemonMoves({ currentPokemon }) {
   // This works because the order of currentMoveGroup, versionGroupMatches and updatedMoves is the same
   // So we don't need to do additional checks
   const fetchAdditionalMovesInfo = async (currentMoveGroup) => {
+    // currentMoveGroup is a specific move set from a specific generation
+    // using the for loop with key allows us to access each move individually, grab additional info for them
+    // push them into updatedMoves, which will then be at the end pushed to finalPokemonMoves
     for (let key in currentMoveGroup) {
       const controller = new AbortController();
       const signal = controller.signal;
@@ -129,129 +132,158 @@ export default function PokemonMoves({ currentPokemon }) {
 
       // If the fetch request doesn't complete in 100 ms, then abort the fetch
       // Whether 100ms is good choice or not needs more testing
+      // The time can be set really low to test timeout additional info fetch
       setTimeout(() => {
         controller.abort();
-      }, 100);
+      }, 10);
 
       try {
         const res = await fetch(currentMoveGroup[key].move.url, { signal });
         newData = await res.json();
       } catch (error) {
         if (error.name === "AbortError") {
-          fetchTimeout.push(currentMoveGroup[key].move);
+          // The move additional data that could not be fetched fast enough is assigned to fetchTimeout
+          // so that they can be fetched later at the end by calling the specific function for it
+          fetchTimeout.push({
+            move: currentMoveGroup[key].move,
+            level: currentMoveGroup[key].level,
+            method: currentMoveGroup[key].method,
+            version: currentMoveGroup[key].version,
+          });
           console.error(
             "Fetching request took too long:",
             currentMoveGroup[key].move.url,
             error
           );
-          updatedMoves[versionGroupMatches[currentGeneration]][key].type =
-            "type test";
-          updatedMoves[versionGroupMatches[currentGeneration]][
-            key
-          ].damage_class = { name: "damage class test", url: "" };
-          updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
-            "accuracy test";
-          updatedMoves[versionGroupMatches[currentGeneration]][key].power =
-            "power test";
-
           continue;
         }
       }
-
-      // newData is the additional information for that particular move
-      // This variable will contain all the past_value generation numbers in a particular move and will reset each for loop cycle
-      const pastValueNumbers = [];
 
       updatedMoves[versionGroupMatches[currentGeneration]][key].type =
         newData.type.name;
       updatedMoves[versionGroupMatches[currentGeneration]][key].damage_class =
         newData.damage_class;
 
-      newData.past_values.forEach((item, index) => {
-        pastValueNumbers.push([
-          getKeyByValue(versionGroupMatches, item.version_group.name),
-          index,
-        ]);
-      });
-
-      // There are two conditions, either currentGeneration is lesser than the pastValueNumbers,
-      // in which case it will use that data, or it will default to default data
-      // since the last number is the largest (we use reverse on the array), if it checks it and the current generation is bigger than that, then that means it is default
-      // We will cycle through the pastValueNumbers (exp: [5, 8]) backwards
-      // so if currentGeneration (exp: 3) is lesser than 8, it know that it is below 8,
-      // next cycle it will check 5 to see if it below 5, if true then that means currentGeneration is between 1 and 5
-      // if false it means current generation is between 5 and 8
-      let i = 0;
-      do {
-        let pastGenerationNumberItem;
-        if (pastValueNumbers.length !== 0) {
-          pastGenerationNumberItem = pastValueNumbers[i][0];
-        } else {
-          pastGenerationNumberItem = currentGeneration;
-        }
-
-        // If the currentGeneration is below past version gen number, then that means use that data
-        // there are various if conditions to check if the data is available, if not, then use the most recent default data
-        if (currentGeneration < pastGenerationNumberItem) {
-          if (newData.past_values[pastValueNumbers[i][1]].accuracy === null) {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
-              newData.accuracy;
-          } else {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
-              newData.past_values[pastValueNumbers[i][1]].accuracy;
-          }
-
-          if (newData.past_values[pastValueNumbers[i][1]].power === null) {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
-              newData.power;
-          } else {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
-              newData.past_values[pastValueNumbers[i][1]].power;
-          }
-        } else {
-          if (newData.accuracy === null) {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
-              null;
-          } else {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].accuracy =
-              newData.accuracy;
-          }
-
-          if (newData.power === null) {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
-              null;
-          } else {
-            updatedMoves[versionGroupMatches[currentGeneration]][key].power =
-              newData.power;
-          }
-        }
-        i++;
-      } while (i < pastValueNumbers.length);
+      // newData, which contains the additional information for the current move in this cycle of loop
+      // and the key, which is the index, of the current move in this cycle
+      // the last variable is the moveset to write the additional info to
+      updatedMoves[versionGroupMatches[currentGeneration]] =
+        decideWhichPastValue(
+          newData,
+          key,
+          updatedMoves[versionGroupMatches[currentGeneration]]
+        );
     }
     // console.log(finalPokemonMoves[versionGroupMatches[currentGeneration]]);
-    console.log(fetchTimeout);
     if (fetchTimeout) {
+      console.log(fetchTimeout);
       timeoutFetchTest(fetchTimeout);
+    } else {
+      setFinalPokemonMoves(updatedMoves);
     }
+  };
 
-    setFinalPokemonMoves(updatedMoves);
+  // newData is the additional information for that particular move
+  // this function is called inside loops that loop over an array with moves, the key here is required to access the specific move
+  // it is just an index number
+  // This function is needed because it is used in two places, one in normal additional info fetch another in info check for timeout moves
+  // The aim of this function is to determine which of the past values to use related to the current generation the user is viewing
+  // if the user is viewing generation 1, showing stats for generation 6, wherein there had been changes done in generation 6, would show wrong information
+  const decideWhichPastValue = (newData, key, moveSet) => {
+    // This variable will contain all the past_value generation numbers in a particular move and will reset each for loop cycle
+    const pastValueNumbers = [];
+
+    newData.past_values.forEach((item, index) => {
+      pastValueNumbers.push([
+        getKeyByValue(versionGroupMatches, item.version_group.name),
+        index,
+      ]);
+    });
+
+    // There are two conditions, either currentGeneration is lesser than the pastValueNumbers,
+    // in which case it will use that data, or it will default to default data
+    // We will cycle through the pastValueNumbers (exp: [5, 8])
+    // so if currentGeneration (exp: 3) is lesser than 5, it know that it is below 5, and will use that, if it fails, it will check the next threshold
+    // next cycle it will check 5 to see if it below 8, if true then that means currentGeneration is between 5 and 8
+    // pastValueNumbers is made up of pair of numbers in an array, first number is the generation number, the other is the index number
+
+    let i = 0;
+    do {
+      let pastGenerationNumberItem;
+      if (pastValueNumbers.length !== 0) {
+        pastGenerationNumberItem = pastValueNumbers[i][0];
+      } else {
+        pastGenerationNumberItem = currentGeneration;
+      }
+
+      // If the currentGeneration is below past version gen number, then that means use that data
+      // there are various if conditions to check if the data is available, if not, then use the most recent default data
+      if (currentGeneration < pastGenerationNumberItem) {
+        if (newData.past_values[pastValueNumbers[i][1]].accuracy === null) {
+          moveSet[key].accuracy = newData.accuracy;
+        } else {
+          moveSet[key].accuracy =
+            newData.past_values[pastValueNumbers[i][1]].accuracy;
+        }
+
+        if (newData.past_values[pastValueNumbers[i][1]].power === null) {
+          moveSet[key].power = newData.power;
+        } else {
+          moveSet[key].power =
+            newData.past_values[pastValueNumbers[i][1]].power;
+        }
+      } else {
+        if (newData.accuracy === null) {
+          moveSet[key].accuracy = null;
+        } else {
+          moveSet[key].accuracy = newData.accuracy;
+        }
+
+        if (newData.power === null) {
+          moveSet[key].power = null;
+        } else {
+          moveSet[key].power = newData.power;
+        }
+      }
+      i++;
+    } while (i < pastValueNumbers.length);
+
+    return moveSet;
   };
 
   const timeoutFetchTest = async (fetchTimeout) => {
     for (let key in fetchTimeout) {
-      const res = await fetch(fetchTimeout[key].url);
+      const res = await fetch(fetchTimeout[key].move.url);
       const newData = await res.json();
 
-      // updatedMoves[versionGroupMatches[currentGeneration]].type =
-      //   newData.type.name;
-      // updatedMoves[versionGroupMatches[currentGeneration]].damage_class =
-      //   newData.damage_class;
-      // updatedMoves[versionGroupMatches[currentGeneration]].accuracy =
-      //   newData.accuracy;
-      // updatedMoves[versionGroupMatches[currentGeneration]].power =
-      //   newData.power;
+      fetchTimeout[key].type = newData.type.name;
+      fetchTimeout[key].damage_class = newData.damage_class;
+
+      fetchTimeout = decideWhichPastValue(newData, key, fetchTimeout);
     }
-    console.log("updatedMoves", updatedMoves);
+
+    // the variables after updatedMoves will give us the current generation the user is viewing
+    const pokemonCurrentGenerationMoves =
+      updatedMoves[versionGroupMatches[currentGeneration]];
+
+    // now that we have fetched the timeout moves at the end, we need to add them to the final pokemon moves
+    // to do this we will find the ones in the final pokemon moves by name, then add the latest info to it
+    // a potential problem for this might be if there are two moves with the same name inside a pokemons moveset, but we will deal with that later
+    // Each item inside fetchTimeout will be searched inside the pokemon moveset, once found it will update to the latest info
+    for (let key in fetchTimeout) {
+      // console.log(fetchTimeout[key].move.name);
+      const foundElement = pokemonCurrentGenerationMoves.find(
+        (element) => element.move.name === fetchTimeout[key].move.name
+      );
+      const indexOfFoundElement =
+        pokemonCurrentGenerationMoves.indexOf(foundElement);
+
+      updatedMoves[versionGroupMatches[currentGeneration]][
+        indexOfFoundElement
+      ] = fetchTimeout[key];
+    }
+
+    setFinalPokemonMoves(updatedMoves);
   };
 
   // When clicking the generation picker, and therefore changing the move list, fetch the additional data for them too
@@ -321,6 +353,7 @@ export default function PokemonMoves({ currentPokemon }) {
                 <tr key={index}>
                   <td>{item.level}</td>
                   <td>{capitalizeFirstLetter(item.move.name)}</td>
+                  {/* {console.log("item", item)} */}
                   {/* It seems that only item.type can take time to load between these three */}
                   {item.type ? (
                     <td>
