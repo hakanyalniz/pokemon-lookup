@@ -1,0 +1,111 @@
+// This code was previously used to timeout the fetches that take too long and then fetch them at the end, meanwhile showing the ones already fetched on the screen.
+// It, however had bugs. First of all, it suffered due to the react strictmode calling twice, this populated the array with twice the moves
+// There was also the problem of not properly fetching moves that had the same name within the same generation
+// If there were two moves with different levels but same names, it would only fetch the latest one, and leave the other one empty, with no additional info fetched
+// These bugs could had been fixed, but using promise.all was faster than this method anyway, so I decided to use it instead
+// the code will be stored here to be used later on in case needed
+
+let fetchTimeout = [];
+
+const fetchAdditionalMovesInfo = async (currentMoveGroup) => {
+  // currentMoveGroup is a specific move set from a specific generation
+  // using the for loop with key allows us to access each move individually, grab additional info for them
+  // push them into updatedMoves, which will then be at the end pushed to finalPokemonMoves
+  for (let key in currentMoveGroup) {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    let newData;
+
+    // If the fetch request doesn't complete in 100 ms, then abort the fetch
+    // Whether 100ms is good choice or not needs more testing
+    // The time can be set really low to test timeout additional info fetch
+    // Timeout is used via variable so that it can be cleared later on when unneeded, it can cause some problems otherwise
+    const myTimeout = setTimeout(() => {
+      controller.abort();
+    }, 1);
+
+    try {
+      const res = await fetch(currentMoveGroup[key].move.url, { signal });
+      newData = await res.json();
+    } catch (error) {
+      if (error.name === "AbortError") {
+        clearTimeout(myTimeout);
+
+        // The move additional data that could not be fetched fast enough is assigned to fetchTimeout
+        // so that they can be fetched later at the end by calling the specific function for it
+        fetchTimeout.push({
+          move: currentMoveGroup[key].move,
+          level: currentMoveGroup[key].level,
+          method: currentMoveGroup[key].method,
+          version: currentMoveGroup[key].version,
+        });
+        console.log("fetchTimeout", JSON.parse(JSON.stringify(fetchTimeout)));
+        console.error(
+          "Fetching request took too long:",
+          currentMoveGroup[key].move.url,
+          error
+        );
+        continue;
+      }
+    }
+
+    updatedMoves[versionGroupMatches[currentGeneration]][key].type =
+      newData.type.name;
+    updatedMoves[versionGroupMatches[currentGeneration]][key].damage_class =
+      newData.damage_class;
+
+    //   newData, which contains the additional information for the current move in this cycle of loop
+    //   and the key, which is the index, of the current move in this cycle
+    //   the last variable is the moveset to write the additional info to
+    updatedMoves[versionGroupMatches[currentGeneration]] = decideWhichPastValue(
+      newData,
+      key,
+      updatedMoves[versionGroupMatches[currentGeneration]]
+    );
+  }
+  // console.log(finalPokemonMoves[versionGroupMatches[currentGeneration]]);
+  setFinalPokemonMoves(updatedMoves);
+
+  if (fetchTimeout) {
+    // console.log(fetchTimeout);
+    timeoutFetch(fetchTimeout);
+  }
+};
+
+const timeoutFetch = async (fetchTimeout) => {
+  // console.log("fetchTimeout 1st", fetchTimeout);
+  for (let key in fetchTimeout) {
+    const res = await fetch(fetchTimeout[key].move.url);
+    const newData = await res.json();
+    // console.log("newData", newData);
+
+    fetchTimeout[key].type = newData.type.name;
+    fetchTimeout[key].damage_class = newData.damage_class;
+
+    fetchTimeout = decideWhichPastValue(newData, key, fetchTimeout);
+  }
+
+  // console.log("fetchTimeout 2st", fetchTimeout);
+
+  // the variables after updatedMoves will give us the current generation the user is viewing
+  const pokemonCurrentGenerationMoves =
+    updatedMoves[versionGroupMatches[currentGeneration]];
+
+  // now that we have fetched the timeout moves at the end, we need to add them to the final pokemon moves
+  // to do this we will find the ones in the final pokemon moves by name, then add the latest info to it
+  // a potential problem for this might be if there are two moves with the same name inside a pokemons moveset, but we will deal with that later
+  // Each item inside fetchTimeout will be searched inside the pokemon moveset, once found it will update to the latest info
+  for (let key in fetchTimeout) {
+    // console.log(fetchTimeout[key].move.name);
+    const foundElement = pokemonCurrentGenerationMoves.find(
+      (element) => element.move.name === fetchTimeout[key].move.name
+    );
+    const indexOfFoundElement =
+      pokemonCurrentGenerationMoves.indexOf(foundElement);
+
+    updatedMoves[versionGroupMatches[currentGeneration]][indexOfFoundElement] =
+      fetchTimeout[key];
+  }
+
+  setFinalPokemonMoves({ ...updatedMoves });
+};
