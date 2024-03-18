@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import "./PokemonMoves.css";
-import { capitalizeFirstLetter } from "../MainList/MainList";
-import { addCSSToTypes } from "../MainList/MainList";
+import PokemonMovesList from "./PokemonMovesList";
 import { useEffect, useState } from "react";
 
 export default function PokemonMoves({ currentPokemon }) {
@@ -47,6 +46,28 @@ export default function PokemonMoves({ currentPokemon }) {
         }
       });
     });
+  };
+
+  const processMovesByGeneration = () => {
+    // versionGroupMoves contains all the moves separated by version names
+    // versionGroupMatches will use the generation number in currentGeneration to fetch the version name
+    // and return the desired generation of versionGroupMoves
+    return finalPokemonMoves[versionGroupMatches[currentGeneration]];
+  };
+
+  const dividePokemonMovesByMethod = (
+    pokemonMovesByGeneration,
+    methodPicker
+  ) => {
+    // Checks if the given array of moves is level-up, machine or egg based move
+    // returns an array filled with the desired methods
+    let pokemonMovesByMethod = [];
+    pokemonMovesByGeneration.forEach((arrayItemObject) => {
+      if (arrayItemObject.method === methodPicker) {
+        pokemonMovesByMethod.push(arrayItemObject);
+      }
+    });
+    return pokemonMovesByMethod;
   };
 
   // Checks whether basePokemonArray is ready to process or not
@@ -235,28 +256,6 @@ export default function PokemonMoves({ currentPokemon }) {
     );
   }, [currentGeneration]);
 
-  const processMovesByMethod = () => {
-    // versionGroupMoves contains all the moves separated by version names
-    // versionGroupMatches will use the generation number in currentGeneration to fetch the version name
-    // and return the desired generation of versionGroupMoves
-    return finalPokemonMoves[versionGroupMatches[currentGeneration]];
-  };
-
-  const ifNullReturnTilde = (isItNull) => {
-    // IF null, return a dash, if not just return the value back
-    return isItNull === null ? "—" : isItNull;
-  };
-
-  const pokemonMoveIcon = (moveCategory) => {
-    if (moveCategory === "physical") {
-      return "/icons/physical-move-category.png";
-    } else if (moveCategory === "special") {
-      return "/icons/special-move-category.png";
-    } else if (moveCategory === "status") {
-      return "/icons/status-move-category.png";
-    }
-  };
-
   useEffect(() => {
     console.log("finalPokemonMoves", finalPokemonMoves);
   }, [finalPokemonMoves]);
@@ -276,67 +275,52 @@ export default function PokemonMoves({ currentPokemon }) {
         <div style={{ fontSize: "18px" }}>{generationPickerText()}</div>
       </div>
 
+      {/* If one of methods are empty, then do not render the list */}
       <div>
-        <span className="sub-sub-title">Moves learnt by level up</span>
-        <table>
-          <thead>
-            <tr>
-              <th>Level</th>
-              <th>Move</th>
-              <th>Type</th>
-              <th>Category</th>
-              <th>Power</th>
-              <th>Accuracy</th>
-            </tr>
-          </thead>
-          <tbody>
-            {processMovesByMethod().map((item, index) => {
-              return (
-                <tr key={index}>
-                  <td>{item.level}</td>
-                  <td>{capitalizeFirstLetter(item.move.name)}</td>
-                  {/* {console.log("item", item)} */}
-                  {/* It seems that only item.type can take time to load between these three */}
-                  {item.type ? (
-                    <td>
-                      <p className={addCSSToTypes(item.type)}>
-                        {capitalizeFirstLetter(item.type)}
-                      </p>
-                    </td>
-                  ) : (
-                    <td>
-                      <p>Loading...</p>
-                    </td>
-                  )}
-                  {/* The below three take more time to load, so precaution was taken */}
-                  {item.damage_class || item.power || item.accuracy ? (
-                    <>
-                      <td>
-                        <img
-                          src={pokemonMoveIcon(item.damage_class.name)}
-                          alt={`pokemon move category ${item.damage_class.name}`}
-                          title={`${capitalizeFirstLetter(
-                            item.damage_class.name
-                          )}`}
-                          className="pokemon-move-category"
-                          loading="lazy"
-                        ></img>
-                      </td>
-                      <td>{ifNullReturnTilde(item.power)}</td>
-                      <td>{ifNullReturnTilde(item.accuracy)}</td>
-                    </>
-                  ) : (
-                    <>
-                      <td>Loading...</td>
-                      <td>Loading...</td>
-                      <td>Loading...</td>
-                    </>
-                  )}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {dividePokemonMovesByMethod(processMovesByGeneration(), "level-up")
+          .length > 0 ? (
+          <>
+            <div className="sub-sub-title">Moves learn by level up</div>
+
+            <PokemonMovesList
+              dividePokemonMovesByMethod={dividePokemonMovesByMethod}
+              processMovesByGeneration={processMovesByGeneration}
+              methodPicker={"level-up"}
+            />
+          </>
+        ) : (
+          ""
+        )}
+
+        {dividePokemonMovesByMethod(processMovesByGeneration(), "machine")
+          .length > 0 ? (
+          <>
+            <div className="sub-sub-title">Moves learn by TM</div>
+
+            <PokemonMovesList
+              dividePokemonMovesByMethod={dividePokemonMovesByMethod}
+              processMovesByGeneration={processMovesByGeneration}
+              methodPicker={"machine"}
+            />
+          </>
+        ) : (
+          ""
+        )}
+
+        {dividePokemonMovesByMethod(processMovesByGeneration(), "egg").length >
+        0 ? (
+          <>
+            <div className="sub-sub-title">Egg moves</div>
+
+            <PokemonMovesList
+              dividePokemonMovesByMethod={dividePokemonMovesByMethod}
+              processMovesByGeneration={processMovesByGeneration}
+              methodPicker={"egg"}
+            />
+          </>
+        ) : (
+          ""
+        )}
       </div>
     </>
   );
